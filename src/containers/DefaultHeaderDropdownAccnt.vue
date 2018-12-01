@@ -4,8 +4,8 @@
       <img
         src="img/avatars/6.jpg"
         class="img-avatar"
-        alt="admin@bootstrapmaster.com" />
-    </template>\
+        alt="admin@bootstrapmaster.com"/>
+    </template>
     <template slot="dropdown">
       <b-dropdown-header tag="div" class="text-center"><strong>Account</strong></b-dropdown-header>
       <b-dropdown-item><i class="fa fa-bell-o"></i> Updates
@@ -33,22 +33,34 @@
       <b-dropdown-item><i class="fa fa-file"></i> Projects
         <b-badge variant="primary">{{ itemsCount }}</b-badge>
       </b-dropdown-item>
-      <b-dropdown-divider />
+      <b-dropdown-divider/>
       <b-dropdown-item><i class="fa fa-shield"></i> Lock Account</b-dropdown-item>
-      <b-dropdown-item><i class="fa fa-lock"></i> Logout</b-dropdown-item>
+      <b-dropdown-item @click.prevent="logout"><i class="fa fa-lock"></i> Logout</b-dropdown-item>
     </template>
   </AppHeaderDropdown>
 </template>
 
 <script>
-import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
-export default {
-  name: 'DefaultHeaderDropdownAccnt',
-  components: {
-    AppHeaderDropdown
-  },
-  data: () => {
-    return { itemsCount: 42 }
+  import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
+
+  export default {
+    name: 'DefaultHeaderDropdownAccount',
+    components: {
+      AppHeaderDropdown
+    },
+    data: () => {
+      return { itemsCount: 42 }
+    },
+    /**
+     * The methods which the layout can use.
+     */
+    methods: {
+      /**
+       * Method used to log the user out.
+       */
+      logout () {
+        this.$store.dispatch('auth/logout')
+      }
+    }
   }
-}
 </script>

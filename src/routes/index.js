@@ -6,34 +6,34 @@
  */
 
 // Containers
-const DefaultContainer = () => import('@/containers/DefaultContainer')
+const DefaultContainer = () => import('@/containers/DefaultContainer').then(m => m.basic || m)
 
 // Views
-const Dashboard = () => import('@/views/Dashboard')
+const Dashboard = () => import('@/views/Dashboard').then(m => m.default || m)
 
-const Colors = () => import('@/views/theme/Colors')
-const Typography = () => import('@/views/theme/Typography')
+const Colors = () => import('@/views/theme/Colors').then(m => m.default || m)
+const Typography = () => import('@/views/theme/Typography').then(m => m.default || m)
 
-const Charts = () => import('@/views/Charts')
-const Widgets = () => import('@/views/Widgets')
+const Charts = () => import('@/views/Charts').then(m => m.default || m)
+const Widgets = () => import('@/views/Widgets').then(m => m.default || m)
 
 // Views - Components
-const Cards = () => import('@/views/base/Cards')
-const Forms = () => import('@/views/base/Forms')
-const Switches = () => import('@/views/base/Switches')
-const Tables = () => import('@/views/base/Tables')
-const Tabs = () => import('@/views/base/Tabs')
-const Breadcrumbs = () => import('@/views/base/Breadcrumbs')
-const Carousels = () => import('@/views/base/Carousels')
-const Collapses = () => import('@/views/base/Collapses')
-const Jumbotrons = () => import('@/views/base/Jumbotrons')
-const ListGroups = () => import('@/views/base/ListGroups')
-const Navs = () => import('@/views/base/Navs')
-const Navbars = () => import('@/views/base/Navbars')
-const Paginations = () => import('@/views/base/Paginations')
-const Popovers = () => import('@/views/base/Popovers')
-const ProgressBars = () => import('@/views/base/ProgressBars')
-const Tooltips = () => import('@/views/base/Tooltips')
+const Cards = () => import('@/views/base/Cards').then(m => m.default || m)
+const Forms = () => import('@/views/base/Forms').then(m => m.default || m)
+const Switches = () => import('@/views/base/Switches').then(m => m.default || m)
+const Tables = () => import('@/views/base/Tables').then(m => m.default || m)
+const Tabs = () => import('@/views/base/Tabs').then(m => m.default || m)
+const Breadcrumbs = () => import('@/views/base/Breadcrumbs').then(m => m.default || m)
+const Carousels = () => import('@/views/base/Carousels').then(m => m.default || m)
+const Collapses = () => import('@/views/base/Collapses').then(m => m.default || m)
+const Jumbotrons = () => import('@/views/base/Jumbotrons').then(m => m.default || m)
+const ListGroups = () => import('@/views/base/ListGroups').then(m => m.default || m)
+const Navs = () => import('@/views/base/Navs').then(m => m.default || m)
+const Navbars = () => import('@/views/base/Navbars').then(m => m.default || m)
+const Paginations = () => import('@/views/base/Paginations').then(m => m.default || m)
+const Popovers = () => import('@/views/base/Popovers').then(m => m.default || m)
+const ProgressBars = () => import('@/views/base/ProgressBars').then(m => m.default || m)
+const Tooltips = () => import('@/views/base/Tooltips').then(m => m.default || m)
 
 // Views - Buttons
 const StandardButtons = () => import('@/views/buttons/StandardButtons')
@@ -61,6 +61,11 @@ const Register = () => import('@/views/pages/Register')
 // Users
 const Users = () => import('@/views/users/Users')
 const User = () => import('@/views/users/User')
+
+function load (component) {
+  // '@' is aliased to src
+  return () => import(`@/views/${component}`)
+}
 
 /**
  * The routes
@@ -111,6 +116,11 @@ export default [
         path: 'widgets',
         name: 'Widgets',
         component: Widgets
+      },
+      {
+        path: 'categories',
+        name: 'Categories',
+        component: load('admin/categories/Index')
       },
       {
         path: 'users',

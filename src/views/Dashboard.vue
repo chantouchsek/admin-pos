@@ -460,6 +460,10 @@ import { Callout } from '@coreui/vue'
 
 export default {
   name: 'dashboard',
+  middleware: 'auth',
+  metaInfo () {
+    return { title: this.$t('home') }
+  },
   components: {
     Callout,
     CardLine1ChartExample,

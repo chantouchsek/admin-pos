@@ -57,6 +57,7 @@
 
 <script>
   export default {
+    middleware: 'guest',
     /**
      * The name of the page
      */
@@ -72,7 +73,9 @@
         user: {}
       }
     },
-
+    metaInfo () {
+      return { title: this.$t('login') }
+    },
     /**
      * The methods of the page can be used
      */

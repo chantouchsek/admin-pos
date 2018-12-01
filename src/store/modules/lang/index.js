@@ -1,5 +1,5 @@
 /* ============
- * Auth Module
+ * Lang Module
  * ============
  */
 

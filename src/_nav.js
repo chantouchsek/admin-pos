@@ -11,7 +11,7 @@ export default {
     },
     {
       title: true,
-      name: 'Theme',
+      name: 'Sales',
       class: '',
       wrapper: {
         element: '',
@@ -19,22 +19,31 @@ export default {
       }
     },
     {
-      name: 'Colors',
+      name: 'P.O.S',
       url: '/theme/colors',
       icon: 'icon-drop'
     },
     {
-      name: 'Typography',
+      name: 'Products',
       url: '/theme/typography',
       icon: 'icon-pencil'
     },
     {
       title: true,
-      name: 'Components',
+      name: 'Admin',
       class: '',
       wrapper: {
         element: '',
         attributes: {}
+      }
+    },
+    {
+      name: 'Categories',
+      url: '/categories',
+      icon: 'icon-calculator',
+      badge: {
+        variant: 'primary',
+        text: 'NEW'
       }
     },
     {
@@ -227,7 +236,7 @@ export default {
     },
     {
       title: true,
-      name: 'Extras'
+      name: 'Managements'
     },
     {
       name: 'Pages',

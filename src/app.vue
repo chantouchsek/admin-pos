@@ -1,13 +1,35 @@
 <template>
-  <router-view/>
+  <div id="app">
+    <loading ref="loading"/>
+    <transition name="page" mode="out-in">
+      <component :is="layout" v-if="layout"/>
+    </transition>
+  </div>
 </template>
 
 <script>
   import store from '@/store'
   import { router } from './bootstrap'
+  import i18n from '@/plugins/i18n'
+
+  import Loading from '@/components/Loading'
+  // Load layout components dynamically.
+  const requireContext = require.context('@/layouts', false, /.*\.vue$/)
+  const layouts = requireContext.keys()
+    .map(file =>
+      [file.replace(/(^.\/)|(\.vue$)/g, ''), requireContext(file)]
+    )
+    .reduce((components, [name, component]) => {
+      components[name] = component.default || component
+      return components
+    }, {})
 
   export default {
     name: 'app',
+    /**
+     * The Locale Language
+     */
+    i18n,
     /**
      * The Vuex store.
      */
@@ -17,6 +39,27 @@
      * The router.
      */
     router,
+
+    components: {
+      Loading
+    },
+
+    data: () => ({
+      layout: null,
+      defaultLayout: 'default'
+    }),
+
+    metaInfo () {
+      const { appName } = {
+        "appName": "Point Of Sales",
+        "locale": "en",
+        "locales": { "en": "EN", "kh": "KH" }
+      }
+      return {
+        title: appName,
+        titleTemplate: `%s · ${appName}`
+      }
+    },
 
     /**
      * This method will be fired once the application has been mounted.
@@ -31,6 +74,7 @@
           //
         }
       })
+      this.$loading = this.$refs.loading
     },
 
     /**
@@ -44,6 +88,19 @@
         inserted (el) {
           el.focus()
         }
+      }
+    },
+    methods: {
+      /**
+       * Set the application layout.
+       *
+       * @param {String} layout
+       */
+      setLayout (layout) {
+        if (!layout || !layouts[layout]) {
+          layout = this.defaultLayout
+        }
+        this.layout = layouts[layout]
       }
     }
   }
