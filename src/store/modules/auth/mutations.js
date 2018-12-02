@@ -36,6 +36,7 @@ export default {
    */
   [LOGIN] (state, { accessToken }) {
     state.authenticated = true
+    state.token = accessToken
     localStorage.setItem('access_token', accessToken)
     Vue.$http.defaults.headers.common.Authorization = `Bearer ${accessToken}`
   },
@@ -79,7 +80,7 @@ export default {
    */
   [FETCH_USER_FAILURE] (state) {
     state.token = null
-    // Cookies.remove('token')
+    state.user = null
     localStorage.removeItem('access_token')
   }
 }

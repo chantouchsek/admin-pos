@@ -11,10 +11,6 @@ import 'core-js/es6/promise'
 import 'core-js/es6/string'
 import 'core-js/es7/array'
 // import cssVars from 'css-vars-ponyfill'
-require('offline-plugin/runtime').install()
-import Meta from 'vue-meta'
-
-Vue.use(Meta)
 
 // The middleware for every page of the application.
 const globalMiddleware = ['locale', 'check-auth']
@@ -38,30 +34,14 @@ import BootstrapVue from 'bootstrap-vue'
 
 Vue.config.debug = process.env.NODE_ENV !== 'production';
 
+require('@/plugins/axios')
+require('@/components')
 
-/* ============
- * Axios
- * ============
- *
- * Promise based HTTP client for the browser and node.js.
- * Because Vue Resource has been retired, Axios will now been used
- * to perform AJAX-requests.
- *
- * https://github.com/mzabriskie/axios
- */
-import Axios from 'axios';
+require('offline-plugin/runtime').install()
 
-Axios.defaults.baseURL = process.env.VUE_APP_API_LOCATION;
-Axios.defaults.headers.common.Accept = 'application/json';
+import Meta from 'vue-meta'
 
-// Bind Axios to Vue.
-Vue.$http = Axios;
-Object.defineProperty(Vue.prototype, '$http', {
-  get () {
-    return Axios;
-  },
-});
-
+Vue.use(Meta)
 
 /* ============
  * Laravel Echo
@@ -226,18 +206,14 @@ async function beforeEach (to, from, next) {
 /**
  * Global after hook.
  *
- * @param {Route} to
- * @param {Route} from
- * @param {Function} next
  */
-async function afterEach (to, from, next) {
+async function afterEach () {
   await router.app.$nextTick()
   router.app.$loading.finish()
-  console.log(next)
   if (store.state.application.drawerActive) {
     Vue.nextTick(() => {
-      store.dispatch('application/hideDrawer');
-    });
+      store.dispatch('application/hideDrawer')
+    })
   }
 }
 
@@ -319,8 +295,7 @@ function getMiddleware (components) {
  * @return {Object}
  */
 function scrollBehavior (to, from, savedPosition) {
-  return new Promise((resolve, reject) => {
-    console.log(savedPosition, reject)
+  return new Promise((resolve, /*reject*/) => {
     if (savedPosition) {
       return savedPosition
     }

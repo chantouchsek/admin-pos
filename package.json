@@ -28,19 +28,24 @@
     "font-awesome": "^4.7.0",
     "js-cookie": "^2.2.0",
     "laravel-echo": "^1.4.1",
+    "lodash.debounce": "latest",
     "offline-plugin": "^5.0.6",
     "perfect-scrollbar": "^1.4.0",
     "pusher-js": "^4.3.1",
     "simple-line-icons": "^2.4.1",
     "sweetalert2": "^7.29.2",
+    "vform": "^1.0.0",
     "vue": "^2.5.17",
     "vue-chartjs": "^3.4.0",
     "vue-i18n": "^8.4.0",
+    "vue-loading-spinner": "^1.0.11",
     "vue-meta": "^1.5.6",
     "vue-perfect-scrollbar": "^0.1.0",
     "vue-router": "^3.0.2",
+    "vuejs-datepicker": "^1.5.4",
     "vuex": "^3.0.1",
-    "vuex-router-sync": "^5.0.0"
+    "vuex-router-sync": "^5.0.0",
+    "lodash": "latest"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",
@@ -65,5 +70,8 @@
   "engines": {
     "node": ">= 8.10.x",
     "npm": ">= 5.6.0"
-  }
+  },
+  "pre-commit": [
+    "lint"
+  ]
 }

@@ -36,35 +36,34 @@ const ProgressBars = () => import('@/views/base/ProgressBars').then(m => m.defau
 const Tooltips = () => import('@/views/base/Tooltips').then(m => m.default || m)
 
 // Views - Buttons
-const StandardButtons = () => import('@/views/buttons/StandardButtons')
-const ButtonGroups = () => import('@/views/buttons/ButtonGroups')
-const Dropdowns = () => import('@/views/buttons/Dropdowns')
-const BrandButtons = () => import('@/views/buttons/BrandButtons')
+const StandardButtons = () => import('@/views/buttons/StandardButtons').then(m => m.default || m)
+const ButtonGroups = () => import('@/views/buttons/ButtonGroups').then(m => m.default || m)
+const Dropdowns = () => import('@/views/buttons/Dropdowns').then(m => m.default || m)
+const BrandButtons = () => import('@/views/buttons/BrandButtons').then(m => m.default || m)
 
 // Views - Icons
-const Flags = () => import('@/views/icons/Flags')
-const FontAwesome = () => import('@/views/icons/FontAwesome')
-const SimpleLineIcons = () => import('@/views/icons/SimpleLineIcons')
-const CoreUIIcons = () => import('@/views/icons/CoreUIIcons')
+const Flags = () => import('@/views/icons/Flags').then(m => m.default || m)
+const FontAwesome = () => import('@/views/icons/FontAwesome').then(m => m.default || m)
+const SimpleLineIcons = () => import('@/views/icons/SimpleLineIcons').then(m => m.default || m)
+const CoreUIIcons = () => import('@/views/icons/CoreUIIcons').then(m => m.default || m)
 
 // Views - Notifications
-const Alerts = () => import('@/views/notifications/Alerts')
-const Badges = () => import('@/views/notifications/Badges')
-const Modals = () => import('@/views/notifications/Modals')
+const Alerts = () => import('@/views/notifications/Alerts').then(m => m.default || m)
+const Badges = () => import('@/views/notifications/Badges').then(m => m.default || m)
+const Modals = () => import('@/views/notifications/Modals').then(m => m.default || m)
 
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
-const Login = () => import('@/views/pages/Login')
-const Register = () => import('@/views/pages/Register')
+const Login = () => import('@/views/pages/Login').then(m => m.default || m)
+const Register = () => import('@/views/pages/Register').then(m => m.default || m)
 
 // Users
-const Users = () => import('@/views/users/Users')
-const User = () => import('@/views/users/User')
+const Users = () => import('@/views/users/Users').then(m => m.default || m)
+const User = () => import('@/views/users/User').then(m => m.default || m)
 
 function load (component) {
-  // '@' is aliased to src
-  return () => import(`@/views/${component}`)
+  return () => import(`@/views/${component}`).then(m => m.default || m)
 }
 
 /**
@@ -119,8 +118,32 @@ export default [
       },
       {
         path: 'categories',
-        name: 'Categories',
-        component: load('admin/categories/Index')
+        meta: { label: 'Categories' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'category.index',
+            component: load('admin/categories/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Category Create' },
+            name: 'category.create',
+            component: load('admin/categories/Create'),
+          },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'Category Edit' },
+            name: 'category.edit',
+            component: load('admin/categories/Edit'),
+            props: true
+          },
+        ]
       },
       {
         path: 'users',
@@ -364,15 +387,15 @@ export default [
   {
     path: '/404',
     name: 'not-found.index',
-    component: Page404,
+    component: Page404
   },
   // Redirects
   {
     path: '/',
-    redirect: '/artists',
+    redirect: '/Dashboard'
   },
   {
     path: '/*',
-    redirect: '/404',
-  },
-];
+    redirect: '/404'
+  }
+]

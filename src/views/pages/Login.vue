@@ -57,11 +57,12 @@
 
 <script>
   export default {
-    middleware: 'guest',
     /**
      * The name of the page
      */
     name: 'login-page',
+
+    middleware: 'guest',
 
     /**
      * The data of the page can use

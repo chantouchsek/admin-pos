@@ -7,5 +7,6 @@
 
 export default {
   authenticated: false,
-  token: localStorage.getItem('access_token')
-};
+  token: localStorage.getItem('access_token'),
+  user: null
+}

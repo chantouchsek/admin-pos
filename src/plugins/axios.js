@@ -1,15 +1,24 @@
-import axios from 'axios'
+/* ============
+ * Axios
+ * ============
+ *
+ * Promise based HTTP client for the browser and node.js.
+ * Because Vue Resource has been retired, Axios will now been used
+ * to perform AJAX-requests.
+ *
+ * https://github.com/mzabriskie/axios
+ */
+import Axios from 'axios'
+import Vue from 'vue'
 import store from '@/store'
-import { router } from '@/bootstrap'
 import swal from 'sweetalert2'
 import i18n from '@/plugins/i18n'
 
+Axios.defaults.baseURL = process.env.VUE_APP_API_LOCATION;
+Axios.defaults.headers.common.Accept = 'application/json';
+
 // Request interceptor
-axios.interceptors.request.use(request => {
-  const token = store.getters['auth/token']
-  if (token) {
-    request.headers.common['Authorization'] = `Bearer ${token}`
-  }
+Axios.interceptors.request.use(request => {
 
   const locale = store.getters['lang/locale']
 
@@ -23,9 +32,8 @@ axios.interceptors.request.use(request => {
 })
 
 // Response interceptor
-axios.interceptors.response.use(response => response, error => {
+Axios.interceptors.response.use(response => response, error => {
   const { status } = error.response
-
   if (status >= 500) {
     swal({
       type: 'error',
@@ -46,11 +54,17 @@ axios.interceptors.response.use(response => response, error => {
       confirmButtonText: i18n.t('ok'),
       cancelButtonText: i18n.t('cancel')
     }).then(() => {
-      store.commit('auth/LOGOUT')
-
-      router.push({ name: 'Login' })
+      store.dispatch('auth/logout')
     })
   }
 
   return Promise.reject(error)
+})
+
+// Bind Axios to Vue.
+Vue.$http = Axios;
+Object.defineProperty(Vue.prototype, '$http', {
+  get () {
+    return Axios;
+  }
 })
