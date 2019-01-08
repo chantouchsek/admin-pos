@@ -183,8 +183,6 @@ export default {
   methods: {
     clicked () {
       this.counter = Math.random() * this.max
-      console.log('Change progress to ' +
-          Math.round(this.counter * 100) / 100)
     },
     setClock() {
       this.timer = setInterval(() => {

@@ -34,6 +34,9 @@ import BootstrapVue from 'bootstrap-vue'
 
 Vue.config.debug = process.env.NODE_ENV !== 'production';
 
+import LaravelVueValidator from 'laravel-vue2-validator'
+import Loading from './components/BLoading'
+
 require('@/plugins/axios')
 require('@/components')
 
@@ -42,6 +45,8 @@ require('offline-plugin/runtime').install()
 import Meta from 'vue-meta'
 
 Vue.use(Meta)
+Vue.use(LaravelVueValidator)
+Vue.component('b-loading', Loading)
 
 /* ============
  * Laravel Echo

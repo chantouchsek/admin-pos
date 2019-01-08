@@ -23,7 +23,7 @@
         type: String,
         default: 'rotate-square',
         validator: function (value) {
-          return _.keys(Spinner).indexOf(_.pascalCase(value)) !== -1
+          return _.keys(Spinner).indexOf(_.upperFirst(value)) !== -1
         }
       },
       size: {
@@ -36,7 +36,7 @@
     },
     computed: {
       cVariant () {
-        return `Spinner${_.pascalCase(this.variant)}`
+        return `Spinner${_.upperFirst(this.variant)}`
       },
       cSize () {
         return `${this.size}px`
