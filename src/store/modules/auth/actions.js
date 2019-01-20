@@ -37,8 +37,6 @@ export const login = ({ commit }, payload) => {
         type: 'success',
         message: 'Login successful!'
       })
-      // Fetch the user.
-      store.dispatch('auth/fetchUser')
       Vue.router.push({
         name: 'Dashboard',
       })

@@ -40,15 +40,24 @@
      */
     router,
 
+    /**
+     * Components
+     */
     components: {
       Loading
     },
 
+    /**
+     * Data
+     */
     data: () => ({
       layout: null,
       defaultLayout: 'default'
     }),
 
+    /**
+     * Meta
+     */
     metaInfo () {
       const { appName } = {
         "appName": "Point Of Sales",
@@ -67,7 +76,7 @@
     mounted () {
       this.$store.watch((state) => {
         if (state.auth.authenticated) {
-          //
+          this.$store.dispatch('auth/fetchUser')
         }
 
         if (!state.auth.authenticated) {
@@ -75,20 +84,6 @@
         }
       })
       this.$loading = this.$refs.loading
-    },
-
-    /**
-     * Watch the router changed
-     */
-    watch: {
-      //
-    },
-    directives: {
-      focus: {
-        inserted (el) {
-          el.focus()
-        }
-      }
     },
     methods: {
       /**

@@ -37,7 +37,7 @@ Vue.config.debug = process.env.NODE_ENV !== 'production';
 import LaravelVueValidator from 'laravel-vue2-validator'
 import Loading from './components/BLoading'
 
-require('@/plugins/axios')
+require('@/plugins')
 require('@/components')
 
 require('offline-plugin/runtime').install()
@@ -133,22 +133,6 @@ function createRouter () {
 
   return router
 }
-
-/*
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(m => m.meta.auth) && !store.state.auth.authenticated) {
-    next({
-      name: 'Login'
-    });
-  } else if (to.matched.some(m => m.meta.guest) && store.state.auth.authenticated) {
-    next({
-      name: 'Dashboard'
-    });
-  } else {
-    next()
-  }
-})
-*/
 
 router.afterEach(afterEach);
 

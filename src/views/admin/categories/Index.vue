@@ -56,6 +56,10 @@
             <i class="fa fa-edit"></i>
           </b-button>
         </template>
+        <template slot="active" slot-scope="row">
+          <b-badge v-if="row.item.active" variant="success">Active</b-badge>
+          <b-badge v-else variant="warning">InActive</b-badge>
+        </template>
       </b-table>
       <b-row>
         <b-col md="6" class="my-1">

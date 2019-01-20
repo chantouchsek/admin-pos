@@ -39,9 +39,10 @@ const all = async ({ commit }, fn = null) => {
 /**
  * Action fired when an category will be created.
  *
+ * @param {function} commit  Commit function to update the store.
  * @param {Object}   category  The category that will be created.
  */
-const create = (category) => {
+const create = ({ commit }, category) => {
   const transformedCategory = CategoryTransformer.send(category)
 
   proxy.create(transformedCategory)
@@ -52,7 +53,7 @@ const create = (category) => {
       })
 
       Vue.router.push({
-        name: 'categories.index'
+        name: 'category.index'
       })
     })
     .catch(() => {
@@ -76,12 +77,13 @@ const created = ({ commit }, category) => {
 /**
  * Action fired when an category will be updated.
  *
+ * @param {function} commit  Commit function to update the store.
  * @param {Object}   category  The category that will be updated.
  */
-const update = (category) => {
+const update = ({ commit }, category) => {
   const transformedCategory = CategoryTransformer.send(category)
 
-  proxy.update(category.id, transformedCategory)
+  proxy.update(category.uuid, transformedCategory)
     .then(() => {
       store.dispatch('application/addAlert', {
         type: 'success',
@@ -89,10 +91,7 @@ const update = (category) => {
       })
 
       Vue.router.push({
-        name: 'categories.show',
-        params: {
-          categoryId: category.id
-        }
+        name: 'category.index'
       })
     })
     .catch(() => {
@@ -116,9 +115,10 @@ const updated = ({ commit }, category) => {
 /**
  * Action fired when an category will be destroyed.
  *
+ * @param {function} commit  Commit function to update the store.
  * @param {Object}   categoryId  The category that will be destroyed.
  */
-const destroy = (categoryId) => {
+const destroy = ({ commit }, categoryId) => {
   proxy.destroy(categoryId)
     .then(() => {
       store.dispatch('application/addAlert', {
@@ -127,7 +127,7 @@ const destroy = (categoryId) => {
       })
 
       Vue.router.push({
-        name: 'categories.index'
+        name: 'category.index'
       })
     })
     .catch(() => {

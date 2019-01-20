@@ -39,6 +39,7 @@ export default {
     state.token = accessToken
     localStorage.setItem('access_token', accessToken)
     Vue.$http.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+    Vue.$echo.connector.pusher.config.auth.headers['Authorization'] = `Bearer ${accessToken}`
   },
 
   /**
@@ -52,6 +53,7 @@ export default {
     state.token = null
     localStorage.removeItem('access_token')
     Vue.$http.defaults.headers.common.Authorization = ''
+    Vue.$echo.connector.pusher.config.auth.headers['Authorization'] = ''
   },
 
   /**
@@ -59,7 +61,7 @@ export default {
    * @param state
    * @param token
    */
-  [SAVE_TOKEN] (state, { token /*remember*/ }) {
+  [SAVE_TOKEN] (state, { token }) {
     state.token = token
     // Cookies.set('token', token, { expires: remember ? 365 : null })
     localStorage.setItem('access_token', token)
@@ -81,6 +83,9 @@ export default {
   [FETCH_USER_FAILURE] (state) {
     state.token = null
     state.user = null
+    state.authenticated = false
     localStorage.removeItem('access_token')
+    Vue.$http.defaults.headers.common.Authorization = ''
+    Vue.$echo.connector.pusher.config.auth.headers['Authorization'] = ''
   }
 }

@@ -5,7 +5,7 @@
         <strong>Category Create </strong>
         <small>Form</small>
       </div>
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <b-form @submit="onSubmit" @reset="onReset" v-if="show" @keydown="$errors.onKeydown($event)">
         <b-form-group id="nameGroup"
                       label="Name:"
                       label-for="name">
@@ -39,7 +39,8 @@
           <b-form-checkbox v-model="form.active">Active</b-form-checkbox>
         </b-form-group>
         <b-button type="submit" variant="primary" class="mr-1">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <b-button type="reset" variant="danger" class="mr-1">Reset</b-button>
+        <b-button type="button" variant="warning" @click="goBack">Back</b-button>
       </b-form>
     </b-card>
   </div>
@@ -77,6 +78,9 @@
         this.$nextTick(() => {
           this.show = true
         })
+      },
+      goBack () {
+        this.$router.push({ name: 'category.index' })
       }
     }
   }

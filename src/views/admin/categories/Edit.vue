@@ -31,7 +31,8 @@
           <b-form-checkbox v-model="form.active">Active</b-form-checkbox>
         </b-form-group>
         <b-button type="submit" variant="primary" class="mr-1">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <b-button type="reset" variant="danger" class="mr-1">Reset</b-button>
+        <b-button type="button" variant="warning" @click="goBack">Back</b-button>
       </b-form>
     </b-card>
   </div>
@@ -64,11 +65,6 @@
     scrollToTop: true,
     data () {
       return {
-        category: {
-          name: '',
-          description: '',
-          active: true
-        },
         form: {
           name: '',
           description: '',
@@ -103,9 +99,14 @@
       fetchCategory (id) {
         proxy.find(id)
           .then((data) => {
-            this.category = CategoryTransformer.fetch(data)
+            this.form = CategoryTransformer.fetch(data)
             this.show = true
           })
+      },
+      goBack () {
+        this.$router.push({
+          name: 'category.index'
+        })
       }
     }
   }
