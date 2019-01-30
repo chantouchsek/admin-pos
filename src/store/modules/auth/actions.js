@@ -86,7 +86,7 @@ export const fetchUser = async ({ commit }) => {
     const { data } = await Vue.$http.get('/user')
     commit(types.FETCH_USER_SUCCESS, { user: data })
   } catch (e) {
-    commit(types.FETCH_USER_FAILURE)
+    // commit(types.FETCH_USER_FAILURE)
   }
 
 }
