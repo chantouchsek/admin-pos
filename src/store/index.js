@@ -44,7 +44,7 @@ export default new Vuex.Store({
   /**
    * Plugins used in the store.
    */
-  plugins: [
+  plugins: debug ? [
     createLogger(),
     createPersistedState(createPersistedState({
       storage: {
@@ -53,5 +53,13 @@ export default new Vuex.Store({
         removeItem: key => Cookies.remove(key)
       }
     }))
-  ],
+  ] : [
+    createPersistedState(createPersistedState({
+      storage: {
+        getItem: key => Cookies.get(key),
+        setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
+        removeItem: key => Cookies.remove(key)
+      }
+    }))
+  ]
 });
