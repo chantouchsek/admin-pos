@@ -45,7 +45,7 @@ export default new Vuex.Store({
    * Plugins used in the store.
    */
   plugins: [
-    debug ? createLogger() : false,
+    createLogger(),
     createPersistedState(createPersistedState({
       storage: {
         getItem: key => Cookies.get(key),
