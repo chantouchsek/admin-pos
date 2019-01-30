@@ -42,7 +42,7 @@
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
         @sort-changed="sortingChanged"
-        :busy.sync="busy"
+        :busy.sync="$errors.busy"
         no-local-sorting
       >
         <template slot="actions" slot-scope="row">
@@ -111,8 +111,7 @@
         query: null,
         pageNumbers: [5, 10, 20, 30, 50, 500],
         sortBy: 'name',
-        sortDesc: false,
-        busy: false
+        sortDesc: false
       }
     },
 
@@ -205,30 +204,22 @@
        * The results will be debounced using the lodash debounce method.
        */
       setQuery: debounce(function (query) {
-        this.busy = true
         this.$store.dispatch('category/all', (proxy) => {
           proxy.setParameters({
             'q': query,
-            'order': this.sortDesc ? 'desc' : 'asc',
+            'direction': this.sortDesc ? 'desc' : 'asc',
             'sort': this.sortable[this.sortBy]
           })
             .removeParameter('page')
         })
-        setTimeout(function () {
-          this.busy = false
-        }.bind(this), 1000)
       }, 500),
       /**
        * Reload the resource
        */
       reloadCategory: debounce(function () {
-        this.busy = true
         this.$store.dispatch('category/all', (proxy) => {
-          proxy.removeParameters(['page', 'q', 'order', 'sort'])
+          proxy.removeParameters(['page', 'q', 'direction', 'sort'])
         })
-        setTimeout(function () {
-          this.busy = false
-        }.bind(this), 1000)
       }, 500),
       /**
        * Delete the resource
@@ -240,8 +231,8 @@
     /**
      * This method will be fired once the application has been mounted.
      */
-    mounted () {
-      this.$store.watch((state) => {
+    async mounted () {
+      await this.$store.watch((state) => {
         if (state.auth.authenticated) {
           this.$store.dispatch('category/all')
         }

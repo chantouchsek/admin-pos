@@ -9,6 +9,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
+import createPersistedState from 'vuex-persistedstate'
+import Cookies from 'js-cookie'
 
 Vue.use(Vuex);
 
@@ -42,5 +44,14 @@ export default new Vuex.Store({
   /**
    * Plugins used in the store.
    */
-  plugins: debug ? [createLogger()] : [],
+  plugins: [
+    debug ? createLogger() : false,
+    createPersistedState(createPersistedState({
+      storage: {
+        getItem: key => Cookies.get(key),
+        setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
+        removeItem: key => Cookies.remove(key)
+      }
+    }))
+  ],
 });
