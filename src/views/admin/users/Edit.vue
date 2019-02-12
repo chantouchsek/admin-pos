@@ -2,7 +2,7 @@
   <div class="animated fadeIn">
     <b-card>
       <div slot="header">
-        <strong>Category Edit </strong>
+        <strong>User Edit </strong>
         <small>Form</small>
       </div>
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
@@ -46,10 +46,10 @@
 </template>
 
 <script>
-  import CategoryProxy from '@/proxies/CategoryProxy'
-  import CategoryTransformer from '@/transformers/CategoryTransformer'
+  import UserProxy from '@/proxies/UserProxy'
+  import UserTransformer from '@/transformers/UserTransformer'
 
-  const proxy = new CategoryProxy()
+  const proxy = new UserProxy()
 
   export default {
     /**
@@ -64,7 +64,7 @@
         required: true
       }
     },
-    name: 'CategoryEdit',
+    name: 'UserEdit',
     middleware: 'auth',
     metaInfo () {
       return { title: this.$t('settings') }
@@ -81,12 +81,12 @@
       }
     },
     mounted () {
-      this.fetchCategory(this.uuid)
+      this.fetchUser(this.uuid)
     },
     methods: {
       async onSubmit (evt) {
         evt.preventDefault()
-        await this.$store.dispatch('category/update', this.form)
+        await this.$store.dispatch('user/update', this.form)
       },
       onReset (evt) {
         evt.preventDefault();
@@ -99,20 +99,20 @@
         })
       },
       /**
-       * Method used to fetch an category.
+       * Method used to fetch an user.
        *
-       * @param {groupId|{type, required}} id The id of the category.
+       * @param {groupId|{type, required}} id The id of the user.
        */
-      fetchCategory (id) {
+      fetchUser (id) {
         proxy.find(id)
           .then((data) => {
-            this.form = CategoryTransformer.fetch(data)
+            this.form = UserTransformer.fetch(data)
             this.show = true
           })
       },
       goBack () {
         this.$router.push({
-          name: 'category.index'
+          name: 'user.index'
         })
       }
     },

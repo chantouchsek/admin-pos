@@ -62,7 +62,7 @@
       const { appName } = {
         "appName": "Point Of Sales",
         "locale": "en",
-        "locales": { "en": "EN", "kh": "KH" }
+        "locales": { "en": "EN", "km": "KM" }
       }
       return {
         title: appName,

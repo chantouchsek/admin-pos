@@ -1,2 +1,5 @@
 import './axios'
-import './laravel-vue-validation'
+import './validator'
+import './meta'
+import './pusher'
+import './moment'

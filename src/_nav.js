@@ -248,6 +248,15 @@ export default {
       name: 'Managements'
     },
     {
+      name: 'Users',
+      url: '/users',
+      icon: 'fa fa-users',
+      badge: {
+        variant: 'primary',
+        text: 'NEW'
+      }
+    },
+    {
       name: 'Pages',
       url: '/pages',
       icon: 'icon-star',
@@ -273,19 +282,6 @@ export default {
           icon: 'icon-star'
         }
       ]
-    },
-    {
-      name: 'Download CoreUI',
-      url: 'http://coreui.io/vue/',
-      icon: 'icon-cloud-download',
-      class: 'mt-auto',
-      variant: 'success'
-    },
-    {
-      name: 'Try CoreUI PRO',
-      url: 'http://coreui.io/pro/vue/',
-      icon: 'icon-layers',
-      variant: 'danger'
     }
   ]
 }

@@ -7,7 +7,7 @@
 
 import {
   SET_LOCALE
-} from './mutation-types';
+} from './mutation-types'
 
 export default {
   /**
@@ -17,6 +17,6 @@ export default {
    * @param locale
    */
   [SET_LOCALE] (state, { locale }) {
-    state.local = locale
+    state.locale = locale
   }
 }

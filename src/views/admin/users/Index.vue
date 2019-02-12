@@ -3,17 +3,17 @@
     <transition name="fade">
       <b-card header-tag="header" class="card-accent-success">
         <div slot="header">
-          <i class="icon-list"></i> Categories
+          <i class="icon-list"></i> Users
           <div class="card-header-actions">
-            <b-link href="#" class="card-header-action btn-setting" @click.prevent="reloadCategory"
+            <b-link href="#" class="card-header-action btn-setting" @click.prevent="reloadResource"
                     v-b-tooltip.hover
                     title="Reload"
             >
               <i class="icon-refresh"></i>
             </b-link>
-            <b-link href="#" class="card-header-action btn-close" :to="{ name: 'category.create' }"
+            <b-link href="#" class="card-header-action btn-close" :to="{ name: 'user.create' }"
                     v-b-tooltip.hover
-                    title="New Category"
+                    title="New User"
             >
               <i class="icon-plus"></i>
             </b-link>
@@ -34,7 +34,7 @@
         </b-row>
         <b-table :show-empty="true"
                  :responsive="true"
-                 :items="category.all"
+                 :items="user.all"
                  :fields="fields"
                  :current-page="currentPage"
                  :filter="query"
@@ -49,7 +49,7 @@
           <template slot="actions" slot-scope="row">
             <b-button size="sm"
                       class="mr-1"
-                      :to="getCategoryRoute(row.item.uuid)"
+                      :to="getEditRoute(row.item.uuid)"
                       variant="primary"
                       v-b-tooltip
                       title="Edit"
@@ -65,7 +65,7 @@
         <b-row>
           <b-col md="6" class="my-1">
             <b-pagination
-              :total-rows="category.pagination.totalCount"
+              :total-rows="user.pagination.totalCount"
               :per-page="limit"
               v-model="currentPage"
               class="my-0"
@@ -93,7 +93,7 @@
   import debounce from 'lodash.debounce'
 
   export default {
-    name: 'categories-index',
+    name: 'users-index',
     middleware: ['auth'],
     metaInfo () {
       return { title: this.$t('settings') }
@@ -102,21 +102,22 @@
     data: () => {
       return {
         fields: [
+          { key: 'staffId', label: 'ID', sortable: true },
           { key: 'name', label: 'Name', sortable: true },
-          { key: 'description', label: 'Description', sortable: true },
+          { key: 'email', label: 'Email', sortable: true },
           { key: 'active', label: 'Active', sortable: true },
           { key: 'actions', label: 'Action' }
         ],
         sortable: {
           name: 'name',
-          description: 'description',
+          staffId: 'staff_id',
+          email: 'email',
           active: 'active'
         },
         query: null,
         pageNumbers: [5, 10, 20, 30, 50, 500],
         sortBy: 'name',
-        sortDesc: false,
-        show: true
+        sortDesc: false
       }
     },
 
@@ -124,10 +125,10 @@
      * The computed properties the page can use.
      */
     computed: {
-      ...mapState(['category']),
+      ...mapState(['user']),
       limit: {
         get () {
-          return this.category.pagination.limit
+          return this.user.pagination.limit
         },
         set (limit) {
           this.setLimit(limit)
@@ -135,7 +136,7 @@
       },
       currentPage: {
         get () {
-          return this.category.pagination.currentPage
+          return this.user.pagination.currentPage
         },
         set (page) {
           this.setPage(page)
@@ -163,15 +164,15 @@
         this.setQuery(this.query)
       },
       /**
-       * Method used to get the category route.
+       * Method used to get the user route.
        *
-       * @param {Number} uuid The category identifier.
+       * @param {Number} uuid The user identifier.
        *
-       * @returns {Object} The category route.
+       * @returns {Object} The user route.
        */
-      getCategoryRoute (uuid) {
+      getEditRoute (uuid) {
         return {
-          name: 'category.edit',
+          name: 'user.edit',
           params: { uuid: uuid }
         }
       },
@@ -181,7 +182,7 @@
        * @param {Number} page The page number.
        */
       setPage (page) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('user/all', (proxy) => {
           proxy.setParameter('page', page)
         })
       },
@@ -191,7 +192,7 @@
        * @param {Number} limit The limit of items being displayed.
        */
       setLimit (limit) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('user/all', (proxy) => {
           proxy.setParameter('limit', limit)
             .removeParameter('page')
         })
@@ -201,7 +202,7 @@
        * The results will be debounced using the lodash debounce method.
        */
       setQuery: debounce(function (query) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('user/all', (proxy) => {
           proxy.setParameters({
             'q': query,
             'direction': this.sortDesc ? 'desc' : 'asc',
@@ -213,16 +214,16 @@
       /**
        * Reload the resource
        */
-      reloadCategory: debounce(function () {
-        this.$store.dispatch('category/all', (proxy) => {
+      reloadResource: debounce(function () {
+        this.$store.dispatch('user/all', (proxy) => {
           proxy.removeParameters(['page', 'q', 'direction', 'sort'])
         })
       }, 500),
       /**
        * Delete the resource
        */
-      destroyCategory (category) {
-        this.$store.dispatch('category/destroy', category)
+      destroy (data) {
+        this.$store.dispatch('user/destroy', data)
       }
     },
     /**
@@ -231,7 +232,7 @@
     async mounted () {
       await this.$store.watch((state) => {
         if (state.auth.authenticated) {
-          this.$store.dispatch('category/all')
+          this.$store.dispatch('user/all')
         }
       })
     },

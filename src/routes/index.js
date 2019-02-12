@@ -59,10 +59,11 @@ const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login').then(m => m.default || m)
 const Register = () => import('@/views/pages/Register').then(m => m.default || m)
 
-// Users
-const Users = () => import('@/views/users/Users').then(m => m.default || m)
-const User = () => import('@/views/users/User').then(m => m.default || m)
-
+/**
+ * Load dynamically the components
+ * @param component
+ * @returns {function(): Promise<any>}
+ */
 function load (component) {
   return () => import(`@/views/${component}`).then(m => m.default || m)
 }
@@ -163,14 +164,21 @@ export default [
         children: [
           {
             path: '',
-            component: Users,
+            component: load('admin/users/Index'),
           },
           {
-            path: ':id',
-            meta: { label: 'User Details' },
-            name: 'User',
-            component: User,
+            path: 'create',
+            meta: { label: 'User Create' },
+            name: 'user.create',
+            component: load('admin/users/Create'),
           },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'User Edit' },
+            name: 'user.edit',
+            component: load('admin/users/Edit'),
+            props: true
+          }
         ]
       },
       {

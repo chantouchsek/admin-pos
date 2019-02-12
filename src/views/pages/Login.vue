@@ -27,7 +27,10 @@
                   </b-input-group>
                   <b-row>
                     <b-col cols="6">
-                      <b-button variant="primary" class="px-4" type="submit">Login</b-button>
+                      <b-button variant="primary" class="px-4" type="submit" :disabled="$errors.busy">
+                        <i class="fa" :class="[$errors.busy ? 'fa-circle-o-notch fa-spin fa-fw' : 'fa-sign-in']"></i>
+                        Login
+                      </b-button>
                     </b-col>
                     <b-col cols="6" class="text-right">
                       <b-button variant="link" class="px-0" @click.prevent="getSelfResetPasswordRoute">Forgot

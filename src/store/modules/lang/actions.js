@@ -7,6 +7,7 @@
 
 import * as types from './mutation-types'
 import Cookies from 'js-cookie'
+import moment from 'moment'
 
 /**
  * Action which will set the locale.
@@ -16,9 +17,9 @@ import Cookies from 'js-cookie'
  */
 export const setLocale = ({ commit }, { locale }) => {
   commit(types.SET_LOCALE, { locale })
-
+  moment.updateLocale(locale, {})
   Cookies.set('locale', locale, { expires: 365 })
-};
+}
 
 export default {
   setLocale
