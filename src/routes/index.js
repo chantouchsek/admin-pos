@@ -8,9 +8,6 @@
 // Containers
 const DefaultContainer = () => import('@/containers/DefaultContainer').then(m => m.basic || m)
 
-// Views
-const Dashboard = () => import('@/views/Dashboard').then(m => m.default || m)
-
 const Colors = () => import('@/views/theme/Colors').then(m => m.default || m)
 const Typography = () => import('@/views/theme/Typography').then(m => m.default || m)
 
@@ -56,7 +53,6 @@ const Modals = () => import('@/views/notifications/Modals').then(m => m.default 
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
-const Login = () => import('@/views/pages/Login').then(m => m.default || m)
 const Register = () => import('@/views/pages/Register').then(m => m.default || m)
 
 /**
@@ -84,7 +80,7 @@ export default [
       {
         path: 'dashboard',
         name: 'Dashboard',
-        component: Dashboard
+        component: load('Dashboard')
       },
       {
         path: 'theme',
@@ -164,7 +160,9 @@ export default [
         children: [
           {
             path: '',
+            meta: { label: 'User List' },
             component: load('admin/users/Index'),
+            name: 'user.index'
           },
           {
             path: 'create',
@@ -389,7 +387,7 @@ export default [
       {
         path: 'login',
         name: 'Login',
-        component: Login
+        component: load('pages/Login')
       },
       {
         path: 'register',

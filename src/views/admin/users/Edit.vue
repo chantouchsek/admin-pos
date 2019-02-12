@@ -5,7 +5,7 @@
         <strong>User Edit </strong>
         <small>Form</small>
       </div>
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <b-form @submit="onSubmit" @reset="onReset">
         <b-form-group id="nameGroup"
                       label="Name:"
                       label-for="name">
