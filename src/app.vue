@@ -74,16 +74,45 @@
      * This method will be fired once the application has been mounted.
      */
     mounted () {
-      this.$store.watch((state) => {
+      const vm = this
+      vm.$store.watch((state) => {
         if (state.auth.authenticated) {
-          this.$store.dispatch('auth/fetchUser')
-        }
-
-        if (!state.auth.authenticated) {
-          //
+          vm.$store.dispatch('auth/fetchUser')
         }
       })
-      this.$loading = this.$refs.loading
+      vm.$loading = vm.$refs.loading
+      const OneSignal = vm.$OneSignal
+      OneSignal.push(() => {
+        let isPushSupported = OneSignal.isPushNotificationsSupported()
+        if (isPushSupported) {
+          let playerId = ''
+          OneSignal.push(["getNotificationPermission", permission => {
+            OneSignal.getUserId().then((userId) => {
+              let data = {
+                playerId: userId,
+                subscribed: true
+              }
+              playerId = userId
+              if (permission === 'granted') vm.$store.dispatch('userDevice/create', data)
+            })
+          }])
+          OneSignal.on('subscriptionChange', (isSubscribed) => {
+            console.log("OneSignal User ID:", playerId)
+            console.log("The user's subscription state is now:", isSubscribed)
+            let data = {
+              userId: playerId,
+              subscribed: isSubscribed
+            }
+            vm.$store.dispatch('userDevice/update', data)
+          })
+          OneSignal.on('notificationPermissionChange', (permissionChange) => {
+            let currentPermission = permissionChange.to
+            console.log('New permission state:', currentPermission)
+          })
+        } else {
+          console.log('Push not supported.')
+        }
+      })
     },
     methods: {
       /**
