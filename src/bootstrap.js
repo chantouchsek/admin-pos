@@ -68,13 +68,6 @@ import routes from '@/routes';
 
 Vue.use(VueRouter);
 
-// export const router = new VueRouter({
-//   mode: 'history',
-//   linkActiveClass: 'open active',
-//   scrollBehavior,
-//   routes
-// })
-
 export const router = createRouter()
 
 /**
@@ -84,7 +77,7 @@ export const router = createRouter()
  */
 function createRouter () {
   const router = new VueRouter({
-    mode: 'history',
+    mode: 'hash',
     linkActiveClass: 'open active',
     scrollBehavior,
     routes
@@ -161,11 +154,6 @@ async function beforeEach (to, from, next) {
 async function afterEach () {
   await router.app.$nextTick()
   router.app.$loading.finish()
-  if (store.state.application.drawerActive) {
-    Vue.nextTick(() => {
-      store.dispatch('application/hideDrawer')
-    })
-  }
 }
 
 /**
@@ -246,7 +234,7 @@ function getMiddleware (components) {
  * @return {Object}
  */
 function scrollBehavior (to, from, savedPosition) {
-  return new Promise((resolve, /*reject*/) => {
+  return new Promise((resolve, reject) => {
     if (savedPosition) {
       return savedPosition
     }

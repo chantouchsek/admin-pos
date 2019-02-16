@@ -40,7 +40,18 @@
       <main class="main">
         <Breadcrumb :list="list"/>
         <div class="container-fluid">
+
+          <b-alert :show="alert.dismissCountDown"
+                   dismissible
+                   :variant="alert.type"
+                   @dismissed="onDismissed"
+                   @dismiss-count-down="countDownChanged"
+          >
+            {{ alert.message }}
+          </b-alert>
+
           <router-view></router-view>
+
         </div>
       </main>
       <AppAside fixed>
@@ -63,7 +74,9 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import nav from '@/_nav'
+
   import {
     Header as AppHeader,
     SidebarToggler,
@@ -112,7 +125,29 @@
       },
       list () {
         return this.$route.matched.filter((route) => route.name || route.meta.label)
+      },
+      ...mapGetters({ 'alert': 'application/alert' })
+    },
+    methods: {
+      countDownChanged (dismissCountDown) {
+        this.$store.dispatch('application/countDownChanged', dismissCountDown)
+      },
+      async onDismissed () {
+        const vm = this
+        await vm.$store.dispatch('application/countDownChanged', 0)
+        await vm.$store.dispatch('application/removeAlert')
       }
+    },
+    /**
+     * This method will be fired once the application has been mounted.
+     */
+    async mounted () {
+      const vm = this
+      await vm.$store.watch((state) => {
+        if (state.auth.authenticated) {
+          // vm.$store.dispatch('application/alert')
+        }
+      })
     }
   }
 </script>

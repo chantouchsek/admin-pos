@@ -24,7 +24,7 @@ const create = async ({ commit }, device) => {
   await proxy.setPlayerId(transformedDevice)
     .then((response) => {
       store.dispatch('application/addAlert', {
-        type: 'danger',
+        type: 'success',
         message: response.success.message
       })
     })

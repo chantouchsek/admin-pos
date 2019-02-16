@@ -32,7 +32,7 @@ Axios.interceptors.request.use(request => {
 })
 
 // Response interceptor
-Axios.interceptors.response.use(response => response, error => {
+Axios.interceptors.response.use((response) => response, (error) => {
   const { status } = error.response
   if (status >= 500) {
     swal({

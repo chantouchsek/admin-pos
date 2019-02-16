@@ -73,16 +73,16 @@
     /**
      * This method will be fired once the application has been mounted.
      */
-    mounted () {
+    async mounted () {
       const vm = this
-      vm.$store.watch((state) => {
+      await vm.$store.watch((state) => {
         if (state.auth.authenticated) {
           vm.$store.dispatch('auth/fetchUser')
         }
       })
       vm.$loading = vm.$refs.loading
       const OneSignal = vm.$OneSignal
-      OneSignal.push(() => {
+      await OneSignal.push(() => {
         let isPushSupported = OneSignal.isPushNotificationsSupported()
         if (isPushSupported) {
           let playerId = ''

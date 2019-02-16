@@ -6,44 +6,30 @@
         <small>Form</small>
       </div>
       <b-form @submit="onSubmit" @reset="onReset" v-if="show" @keydown="$errors.onKeydown($event)">
-        <b-form-group id="nameGroup"
-                      label="Name:"
-                      label-for="name">
+        <b-form-group label="Name:"
+                      label-for="name"
+                      :invalid-feedback="$errors.first('name')"
+        >
           <b-form-input id="name"
                         type="text"
                         v-model="form.name"
-                        aria-describedby="inputNameFeedback"
                         :state="!$errors.has('name')"
                         placeholder="Enter name">
           </b-form-input>
-          <b-form-invalid-feedback id="inputNameFeedback">
-            <error input="name"/>
-          </b-form-invalid-feedback>
+
         </b-form-group>
-        <b-form-group id="descriptionGroup"
-                      label="Description:"
-                      label-for="description">
+        <b-form-group label="Description:"
+                      label-for="description"
+                      :invalid-feedback="$errors.first('description')"
+        >
           <textarea-autosize v-model="form.description"
                              input-name="description"
                              placeholder="Enter description"
           ></textarea-autosize>
-          <b-form-invalid-feedback>
-            <error input="description"/>
-          </b-form-invalid-feedback>
         </b-form-group>
-        <b-form-group id="activeGroup">
-          <b-form-checkbox v-model="form.active">Active</b-form-checkbox>
-        </b-form-group>
-        <b-button variant="primary" class="mr-1" type="submit" :disabled="$errors.busy">
-          <i class="fa" :class="[$errors.busy ? 'fa-circle-o-notch fa-spin fa-fw' : 'fa-paper-plane']"></i>
-          Submit
-        </b-button>
-        <b-button type="reset" variant="danger" class="mr-1">
-          <i class="fa fa-undo"></i> Reset
-        </b-button>
-        <b-button type="button" variant="warning" @click="goBack">
-          <i class="fa fa-arrow-circle-left"></i> Back
-        </b-button>
+
+        <v-button @click="goBack"></v-button>
+
       </b-form>
     </b-card>
   </div>

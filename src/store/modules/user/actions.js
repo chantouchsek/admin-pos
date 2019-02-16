@@ -46,15 +46,25 @@ const create = ({ commit }, user) => {
   const transformedUser = UserTransformer.send(user)
 
   proxy.create(transformedUser)
-    .then(() => {
+    .then((response) => {
       store.dispatch('application/addAlert', {
         type: 'success',
-        message: 'User has been created!'
+        message: response.message
       })
 
       Vue.router.push({
         name: 'user.index'
       })
+
+      Vue.$swal.fire({
+        position: 'top-end',
+        type: 'success',
+        title: response.message,
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: 'animated tada'
+      })
+
     })
     .catch(() => {
       store.dispatch('application/addAlert', {
@@ -84,15 +94,25 @@ const update = ({ commit }, user) => {
   const transformedUser = UserTransformer.send(user)
 
   proxy.update(user.uuid, transformedUser)
-    .then(() => {
+    .then((response) => {
       store.dispatch('application/addAlert', {
         type: 'success',
-        message: 'User has been updated!'
+        message: response.message
       })
 
       Vue.router.push({
         name: 'user.index'
       })
+
+      Vue.$swal.fire({
+        position: 'top-end',
+        type: 'success',
+        title: response.message,
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: 'animated tada'
+      })
+
     })
     .catch(() => {
       store.dispatch('application/addAlert', {
@@ -120,15 +140,18 @@ const updated = ({ commit }, user) => {
  */
 const destroy = ({ commit }, userId) => {
   proxy.destroy(userId)
-    .then(() => {
+    .then((response) => {
       store.dispatch('application/addAlert', {
         type: 'success',
-        message: 'User has been destroyed!'
+        message: response.message
       })
 
       Vue.router.push({
         name: 'user.index'
       })
+
+      Vue.$swal.fire('Deleted!', response.message, 'success')
+
     })
     .catch(() => {
       store.dispatch('application/addAlert', {

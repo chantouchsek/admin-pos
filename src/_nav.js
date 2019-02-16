@@ -257,6 +257,15 @@ export default {
       }
     },
     {
+      name: 'Roles',
+      url: '/roles',
+      icon: 'fa fa-key',
+      badge: {
+        variant: 'info',
+        text: 'NEW'
+      }
+    },
+    {
       name: 'Pages',
       url: '/pages',
       icon: 'icon-star',

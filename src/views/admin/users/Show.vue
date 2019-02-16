@@ -7,7 +7,33 @@
       header-text-variant="black"
       align="left"
     >
-      <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+
+      <b-media>
+        <b-img slot="aside" blank blank-color="#ccc" width="64" alt="placeholder"/>
+        <h5 class="mt-0">{{ detail.name }}</h5>
+        <p>
+          Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
+          Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc
+          ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+        </p>
+        <p>
+          Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque
+          penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+        </p>
+      </b-media>
+
+      <b-card-footer footer-border-variant="primary">
+
+        <b-button type="button" variant="primary" class="mr-1" :disabled="$errors.busy">
+          <i class="fa fa-pencil-square-o"></i> Edit
+        </b-button>
+
+        <b-button type="button" variant="warning" @click="goBack" :disabled="$errors.busy">
+          <i class="fa fa-arrow-circle-left"></i> Back
+        </b-button>
+
+      </b-card-footer>
+
     </b-card>
   </div>
 </template>

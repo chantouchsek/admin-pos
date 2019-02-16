@@ -5,7 +5,7 @@
         <div slot="header">
           <i class="icon-list"></i> Categories
           <div class="card-header-actions">
-            <b-link href="#" class="card-header-action btn-setting" @click.prevent="reloadCategory"
+            <b-link href="#" class="card-header-action btn-setting mr-1" @click.prevent="reloadResource"
                     v-b-tooltip.hover
                     title="Reload"
             >
@@ -22,7 +22,7 @@
 
         <b-row>
           <b-col md="6" class="mb-2">
-            <b-form-group horizontal label="Filter" class="mb-0">
+            <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
               <b-input-group>
                 <b-form-input v-model="query" placeholder="Type to search..."></b-form-input>
                 <b-input-group-append>
@@ -30,6 +30,19 @@
                 </b-input-group-append>
               </b-input-group>
             </b-form-group>
+          </b-col>
+          <b-col md="6" class="mb-2 mt-2">
+            <b-form-checkbox
+              id="active"
+              v-model="active"
+              value="0"
+              unchecked-value="1"
+              switch
+              @input="setQuery(query)"
+              :disabled="$errors.busy"
+            >
+              InActive
+            </b-form-checkbox>
           </b-col>
         </b-row>
         <b-table :show-empty="true"
@@ -49,7 +62,7 @@
           <template slot="actions" slot-scope="row">
             <b-button size="sm"
                       class="mr-1"
-                      :to="getCategoryRoute(row.item.uuid)"
+                      :to="getEditRoute(row.item.uuid)"
                       variant="primary"
                       v-b-tooltip
                       title="Edit"
@@ -73,7 +86,7 @@
             ></b-pagination>
           </b-col>
           <b-col md="6" class="my-1">
-            <b-form-group horizontal label="Per page" class="mb-0">
+            <b-form-group label-cols-sm="3" label="Per page" class="mb-0">
               <b-form-select
                 v-model="limit"
                 :options="pageNumbers"
@@ -116,7 +129,8 @@
         pageNumbers: [5, 10, 20, 30, 50, 500],
         sortBy: 'name',
         sortDesc: false,
-        show: true
+        show: true,
+        active: 1
       }
     },
 
@@ -169,7 +183,7 @@
        *
        * @returns {Object} The category route.
        */
-      getCategoryRoute (uuid) {
+      getEditRoute (uuid) {
         return {
           name: 'category.edit',
           params: { uuid: uuid }
@@ -200,12 +214,14 @@
        * Method used to set the query of the search bar.
        * The results will be debounced using the lodash debounce method.
        */
-      setQuery: debounce(function (query) {
-        this.$store.dispatch('category/all', (proxy) => {
+      setQuery: debounce(async function (query) {
+        const vm = this
+        await vm.$store.dispatch('category/all', (proxy) => {
           proxy.setParameters({
             'q': query,
-            'direction': this.sortDesc ? 'desc' : 'asc',
-            'sort': this.sortable[this.sortBy]
+            'direction': vm.sortDesc ? 'desc' : 'asc',
+            'sort': vm.sortable[vm.sortBy],
+            active: vm.active
           })
             .removeParameter('page')
         })
@@ -213,15 +229,15 @@
       /**
        * Reload the resource
        */
-      reloadCategory: debounce(function () {
+      reloadResource: debounce(function () {
         this.$store.dispatch('category/all', (proxy) => {
-          proxy.removeParameters(['page', 'q', 'direction', 'sort'])
+          proxy.removeParameters(['page', 'q', 'direction', 'sort', 'active'])
         })
       }, 500),
       /**
        * Delete the resource
        */
-      destroyCategory (category) {
+      destroy (category) {
         this.$store.dispatch('category/destroy', category)
       }
     },
@@ -229,9 +245,13 @@
      * This method will be fired once the application has been mounted.
      */
     async mounted () {
-      await this.$store.watch((state) => {
+      const vm = this
+      await vm.$store.watch((state) => {
         if (state.auth.authenticated) {
-          this.$store.dispatch('category/all')
+          vm.$store.dispatch('category/all', (proxy) => {
+            proxy.removeParameters(['page', 'q', 'direction', 'sort'])
+              .setParameters({ 'active': vm.active })
+          })
         }
       })
     },

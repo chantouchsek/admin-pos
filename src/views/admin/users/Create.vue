@@ -49,34 +49,41 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group label-cols-sm="3" label="Gender:" label-align-sm="left" class="mb-0">
-          <b-form-radio-group class="pt-2" :options="gender" v-model="form.gender"/>
+        <b-form-group label-cols-sm="2"
+                      label="Gender:"
+                      label-align-sm="left"
+                      class="mb-2"
+                      :invalid-feedback="$errors.first('gender')"
+                      label-for="gender"
+                      :state="!$errors.has('gender')"
+        >
+          <b-form-radio-group class="pt-2"
+                              :options="gender"
+                              v-model="form.gender"
+                              :state="!$errors.has('gender')"
+          />
         </b-form-group>
 
         <b-form-group label="Date Of Birth:"
                       label-for="dateOfBirth"
                       :invalid-feedback="$errors.first('date_of_birth')"
         >
-          <b-form-input type="date"
-                        v-model="form.dateOfBirth"
-                        placeholder="Enter date of birth"
-                        :state="!$errors.has('date_of_birth')"
-                        name="date_of_birth"
-          >
-          </b-form-input>
+          <date-time-picker v-model="form.dateOfBirth"
+                            clearable
+                            name="date_of_birth"
+                            :disabled-date="disabledDate"
+          ></date-time-picker>
         </b-form-group>
 
         <b-form-group label="Start working date:"
                       label-for="startWorkingDate"
                       :invalid-feedback="$errors.first('start_working_date')"
         >
-          <b-form-input type="date"
-                        v-model="form.startWorkingDate"
-                        placeholder="Enter start working date"
-                        :state="!$errors.has('start_working_date')"
-                        name="start_working_date"
-          >
-          </b-form-input>
+          <date-time-picker v-model="form.startWorkingDate"
+                            clearable
+                            name="start_working_date"
+                            :disabled-date="disabledDate"
+          ></date-time-picker>
         </b-form-group>
 
         <b-form-group label="Address:"
@@ -89,8 +96,16 @@
           ></textarea-autosize>
         </b-form-group>
 
-        <b-form-group label="Roles:">
-          <b-form-checkbox-group id="roles" name="roles" v-model="form.roles">
+        <b-form-group label="Roles:"
+                      :invalid-feedback="$errors.first('roles')"
+                      label-for="roles"
+                      :state="!$errors.has('roles')"
+        >
+          <b-form-checkbox-group id="roles"
+                                 name="roles"
+                                 v-model="form.roles"
+                                 :state="!$errors.has('roles')"
+          >
             <b-form-checkbox v-for="(roles,index) in role.all"
                              :key="`role-index-${index}`"
                              :value="roles.name"
@@ -101,8 +116,16 @@
           </b-form-checkbox-group>
         </b-form-group>
 
-        <b-form-group label="Permissions:">
-          <b-form-checkbox-group id="permissions" name="permissions" v-model="form.permissions">
+        <b-form-group label="Permissions:"
+                      :invalid-feedback="$errors.first('permissions')"
+                      label-for="permissions"
+                      :state="!$errors.has('permissions')"
+        >
+          <b-form-checkbox-group id="permissions"
+                                 name="permissions"
+                                 v-model="form.permissions"
+                                 :state="!$errors.has('permissions')"
+          >
             <b-form-checkbox v-for="(permissions,index) in permission.all"
                              :key="`permission-index-${index}`"
                              :value="permissions.name"
@@ -117,22 +140,7 @@
           <b-form-checkbox v-model="form.active" switch>Active</b-form-checkbox>
         </b-form-group>
 
-        <b-card-footer footer-border-variant="primary">
-
-          <b-button variant="primary" class="mr-1" type="submit" :disabled="$errors.busy">
-            <i class="fa" :class="[$errors.busy ? 'fa-circle-o-notch fa-spin fa-fw' : 'fa-paper-plane']"></i>
-            Submit
-          </b-button>
-
-          <b-button type="reset" variant="danger" class="mr-1" :disabled="$errors.busy">
-            <i class="fa fa-undo"></i> Reset
-          </b-button>
-
-          <b-button type="button" variant="warning" @click="goBack" :disabled="$errors.busy">
-            <i class="fa fa-arrow-circle-left"></i> Back
-          </b-button>
-
-        </b-card-footer>
+        <v-button @click="goBack"></v-button>
 
       </b-card>
     </b-form>
@@ -181,6 +189,9 @@
       },
       goBack () {
         this.$router.push({ name: 'user.index' })
+      },
+      disabledDate (time) {
+        return time > this.$moment()
       }
     },
     /**

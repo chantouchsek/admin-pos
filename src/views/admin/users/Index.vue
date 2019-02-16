@@ -76,7 +76,7 @@
               <b-dropdown-item :to="getDetailRoute(row.item.uuid)">
                 <i class="fa fa-info"></i> Detail
               </b-dropdown-item>
-              <b-dropdown-item href="#">
+              <b-dropdown-item href="#" @click="destroy(row.item.uuid)">
                 <i class="fa fa-trash"></i> Delete
               </b-dropdown-item>
             </b-dropdown>
@@ -85,13 +85,16 @@
             <b-badge v-if="row.item.active" variant="success">Active</b-badge>
             <b-badge v-else variant="warning">InActive</b-badge>
           </template>
+          <template slot="dateOfBirth" slot-scope="row">
+            {{ $moment(row.item.dateOfBirth).format('Do-MMM-YYYY') }}
+          </template>
         </b-table>
         <b-row>
           <b-col md="6" class="my-1">
             <b-pagination
               :total-rows="user.pagination.totalCount"
               :per-page="limit"
-              v-model="currentPage"
+              v-model.number="currentPage"
               class="my-0"
               :disabled="$errors.busy"
             ></b-pagination>
@@ -129,6 +132,7 @@
           { key: 'staffId', label: 'ID', sortable: true },
           { key: 'name', label: 'Name', sortable: true },
           { key: 'email', label: 'Email', sortable: true },
+          { key: 'dateOfBirth', label: 'Date Of Birth', sortable: true },
           { key: 'phoneNumber', label: 'Phone Number', sortable: true },
           { key: 'active', label: 'Active', sortable: true },
           { key: 'actions', label: 'Action' }
@@ -256,8 +260,21 @@
       /**
        * Delete the resource
        */
-      destroy (data) {
-        this.$store.dispatch('user/destroy', data)
+      destroy (uuid) {
+        const vm = this
+        vm.$swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.value) {
+            vm.$store.dispatch('user/destroy', uuid)
+          }
+        })
       }
     },
     /**

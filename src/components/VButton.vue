@@ -1,39 +1,30 @@
 <template>
-  <button :type="nativeType" :disabled="loading" :class="{
-    [`btn-${type}`]: true,
-    'btn-block': block,
-    'btn-lg': large,
-    'btn-loading': loading
-  }" class="btn"
-  >
-    <slot/>
-  </button>
+  <b-card-footer footer-border-variant="primary">
+
+    <b-button variant="primary" class="mr-1" type="submit" :disabled="$errors.busy">
+      <i class="fa" :class="{'fa-paper-plane' : !$errors.busy }"></i>
+      <b-spinner small type="grow" v-if="$errors.busy"/>
+      {{ $errors.busy ? 'Saving...' : 'Submit' }}
+    </b-button>
+
+    <b-button type="reset" variant="danger" class="mr-1" :disabled="$errors.busy">
+      <i class="fa fa-undo"></i> Reset
+    </b-button>
+
+    <b-button type="button" variant="warning" @click="goBack" :disabled="$errors.busy">
+      <i class="fa fa-arrow-circle-left"></i> Back
+    </b-button>
+
+  </b-card-footer>
 </template>
 
 <script>
   export default {
     name: 'VButton',
-    props: {
-      type: {
-        type: String,
-        default: 'primary'
-      },
-      nativeType: {
-        type: String,
-        default: 'submit'
-      },
-      loading: {
-        type: Boolean,
-        default: false
-      },
-      block: {
-        type: Boolean,
-        default: false
-      },
-      large: {
-        type: Boolean,
-        default: false
+    methods: {
+      goBack () {
+        this.$emit('click')
       }
-    }
+    },
   }
 </script>
