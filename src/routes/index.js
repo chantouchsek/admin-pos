@@ -171,6 +171,13 @@ export default [
             component: load('admin/users/Create'),
           },
           {
+            path: ':uuid/detail',
+            meta: { label: 'User Detail' },
+            name: 'user.detail',
+            component: load('admin/users/Show'),
+            props: true
+          },
+          {
             path: ':uuid/edit',
             meta: { label: 'User Edit' },
             name: 'user.edit',

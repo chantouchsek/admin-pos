@@ -3,9 +3,9 @@
     <transition name="fade">
       <b-card header-tag="header" class="card-accent-success">
         <div slot="header">
-          <i class="icon-list"></i> Users
+          <i class="icon-list"></i> Users List
           <div class="card-header-actions">
-            <b-link href="#" class="card-header-action btn-setting" @click.prevent="reloadResource"
+            <b-link href="#" class="card-header-action btn-setting mr-1" @click.prevent="reloadResource"
                     v-b-tooltip.hover
                     title="Reload"
             >
@@ -22,7 +22,7 @@
 
         <b-row>
           <b-col md="6" class="mb-2">
-            <b-form-group horizontal label="Filter" class="mb-0">
+            <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
               <b-input-group>
                 <b-form-input v-model="query" placeholder="Type to search..."></b-form-input>
                 <b-input-group-append>
@@ -31,11 +31,29 @@
               </b-input-group>
             </b-form-group>
           </b-col>
+          <b-col md="6" class="mb-2 mt-2">
+            <b-form-checkbox
+              id="active"
+              v-model="active"
+              value="0"
+              unchecked-value="1"
+              switch
+              @input="setQuery(query)"
+              :disabled="$errors.busy"
+            >
+              InActive
+            </b-form-checkbox>
+          </b-col>
         </b-row>
         <b-table :show-empty="true"
                  :responsive="true"
                  :items="user.all"
                  :fields="fields"
+                 bordered
+                 outlined
+                 striped
+                 hover
+                 fixed
                  :current-page="currentPage"
                  :filter="query"
                  :sort-by.sync="sortBy"
@@ -47,15 +65,21 @@
                  :no-provider-filtering="true"
         >
           <template slot="actions" slot-scope="row">
-            <b-button size="sm"
-                      class="mr-1"
-                      :to="getEditRoute(row.item.uuid)"
-                      variant="primary"
-                      v-b-tooltip
-                      title="Edit"
+            <b-dropdown text="Action"
+                        variant="primary"
+                        class="m-2"
+                        size="sm"
             >
-              <i class="fa fa-edit"></i>
-            </b-button>
+              <b-dropdown-item :to="getEditRoute(row.item.uuid)">
+                <i class="fa fa-edit"></i> Edit
+              </b-dropdown-item>
+              <b-dropdown-item :to="getDetailRoute(row.item.uuid)">
+                <i class="fa fa-info"></i> Detail
+              </b-dropdown-item>
+              <b-dropdown-item href="#">
+                <i class="fa fa-trash"></i> Delete
+              </b-dropdown-item>
+            </b-dropdown>
           </template>
           <template slot="active" slot-scope="row">
             <b-badge v-if="row.item.active" variant="success">Active</b-badge>
@@ -73,7 +97,7 @@
             ></b-pagination>
           </b-col>
           <b-col md="6" class="my-1">
-            <b-form-group horizontal label="Per page" class="mb-0">
+            <b-form-group label-cols-sm="3" label="Per page" class="mb-0">
               <b-form-select
                 v-model="limit"
                 :options="pageNumbers"
@@ -96,7 +120,7 @@
     name: 'users-index',
     middleware: ['auth'],
     metaInfo () {
-      return { title: this.$t('settings') }
+      return { title: this.$t('users.title') }
     },
     scrollToTop: true,
     data: () => {
@@ -105,6 +129,7 @@
           { key: 'staffId', label: 'ID', sortable: true },
           { key: 'name', label: 'Name', sortable: true },
           { key: 'email', label: 'Email', sortable: true },
+          { key: 'phoneNumber', label: 'Phone Number', sortable: true },
           { key: 'active', label: 'Active', sortable: true },
           { key: 'actions', label: 'Action' }
         ],
@@ -112,12 +137,14 @@
           name: 'name',
           staffId: 'staff_id',
           email: 'email',
+          phone_number: 'phoneNumber',
           active: 'active'
         },
         query: null,
         pageNumbers: [5, 10, 20, 30, 50, 500],
         sortBy: 'name',
-        sortDesc: false
+        sortDesc: false,
+        active: 1
       }
     },
 
@@ -141,14 +168,6 @@
         set (page) {
           this.setPage(page)
         }
-      },
-      sortOptions () {
-        // Create an options list from our fields
-        return this.fields
-          .filter(f => f.sortable)
-          .map(f => {
-            return { text: f.label, value: f.key }
-          })
       }
     },
     /**
@@ -159,9 +178,10 @@
        * The method use track the table sort changed.
        */
       sortingChanged (ctx) {
-        this.sortBy = ctx.sortBy
-        this.sortDesc = ctx.sortDesc
-        this.setQuery(this.query)
+        const vm = this
+        vm.sortBy = ctx.sortBy
+        vm.sortDesc = ctx.sortDesc
+        vm.setQuery(vm.query)
       },
       /**
        * Method used to get the user route.
@@ -173,6 +193,19 @@
       getEditRoute (uuid) {
         return {
           name: 'user.edit',
+          params: { uuid: uuid }
+        }
+      },
+      /**
+       * Method used to get the user route.
+       *
+       * @param {Number} uuid The user identifier.
+       *
+       * @returns {Object} The user route.
+       */
+      getDetailRoute (uuid) {
+        return {
+          name: 'user.detail',
           params: { uuid: uuid }
         }
       },
@@ -202,13 +235,14 @@
        * The results will be debounced using the lodash debounce method.
        */
       setQuery: debounce(function (query) {
-        this.$store.dispatch('user/all', (proxy) => {
+        const vm = this
+        vm.$store.dispatch('user/all', (proxy) => {
           proxy.setParameters({
-            'q': query,
-            'direction': this.sortDesc ? 'desc' : 'asc',
-            'sort': this.sortable[this.sortBy]
-          })
-            .removeParameter('page')
+            q: query,
+            direction: vm.sortDesc ? 'desc' : 'asc',
+            sort: vm.sortable[vm.sortBy],
+            active: vm.active
+          }).removeParameter('page')
         })
       }, 500),
       /**
@@ -230,9 +264,13 @@
      * This method will be fired once the application has been mounted.
      */
     async mounted () {
-      await this.$store.watch((state) => {
+      const vm = this
+      await vm.$store.watch((state) => {
         if (state.auth.authenticated) {
-          this.$store.dispatch('user/all')
+          vm.$store.dispatch('user/all', (proxy) => {
+            proxy.removeParameters(['page', 'q', 'direction', 'sort'])
+              .setParameters({ 'active': vm.active })
+          })
         }
       })
     },

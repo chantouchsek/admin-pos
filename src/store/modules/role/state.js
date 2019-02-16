@@ -1,8 +1,8 @@
 /* ============
- * User State
+ * Role State
  * ============
  *
- * The state of the user module.
+ * The state of the role module.
  */
 
 export default {

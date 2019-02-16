@@ -1,8 +1,8 @@
 /* ============
- * User Mutations
+ * Role Mutations
  * ============
  *
- * The mutations available for the user module.
+ * The mutations available for the role module.
  */
 
 import store from '@/store'
@@ -16,34 +16,33 @@ import {
 
 export default {
   /**
-   * Mutation to update the store with the fetched users.
+   * Mutation to update the store with the fetched roles.
    *
    * @param {Object} state      The current state of the store.
-   * @param {Array}  users    The fetched users.
+   * @param {Array}  roles    The fetched roles.
    * @param {Object} pagination The fetched pagination.
    */
-  [ALL] (state, { users, pagination }) {
-    state.all = users
+  [ALL] (state, { roles, pagination }) {
+    state.all = roles
     state.pagination = pagination
   },
 
   /**
-   * Mutation to update the store with the fetched user.
+   * Mutation to update the store with the fetched role.
    *
    * @param {Object} state      The current state of the store.
-   * @param {Array}  user    The fetched users.
+   * @param {Array}  role    The fetched roles.
    */
-  [DETAIL] (state, { user }) {
-    state.detail = user
+  [DETAIL] (state, { role }) {
+    state.detail = role
   },
-
   /**
-   * Mutation to respond to the action when an user has been created.
+   * Mutation to respond to the action when an role has been created.
    *
    * @param {Object} state   The current state of the store.
-   * @param {Object} user  The user that has been created.
+   * @param {Object} role  The role that has been created.
    */
-  [CREATED] (state, user) {
+  [CREATED] (state, role) {
     const {
       totalCount,
       limit
@@ -56,28 +55,27 @@ export default {
     }
 
     if (limit > state.all.length) {
-      state.all.push(user)
+      state.all.push(role)
     }
   },
 
   /**
-   * Mutation to respond to the action when an user has been updated.
+   * Mutation to respond to the action when an role has been updated.
    *
    * @param {Object} state  The current state of the store.
-   * @param {Object} user The user that has been updated.
+   * @param {Object} role The role that has been updated.
    */
-  [UPDATED] (state, user) {
+  [UPDATED] (state, role) {
     state.all = state.all.map((item) => {
-      if (item.id === user.id) {
-        return user
+      if (item.id === role.id) {
+        return role
       }
-
       return item
     })
   },
 
   /**
-   * Mutation to respond to the action when an user has been destroyed.
+   * Mutation to respond to the action when an role has been destroyed.
    *
    * @param {Object} state The current state of the store.
    */
@@ -91,12 +89,12 @@ export default {
 
     let page = currentPage
 
-    // Check if the user is the last one on the page
+    // Check if the role is the last one on the page
     if (totalPages === currentPage && currentPage !== 1 && totalCount % limit === 1) {
       page -= 1
     }
 
-    store.dispatch('user/all', (proxy) => {
+    store.dispatch('role/all', (proxy) => {
       proxy.setParameter('page', page)
     })
   }

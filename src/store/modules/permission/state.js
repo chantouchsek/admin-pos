@@ -1,8 +1,8 @@
 /* ============
- * User State
+ * Permission State
  * ============
  *
- * The state of the user module.
+ * The state of the permission module.
  */
 
 export default {

@@ -1,8 +1,8 @@
 /* ============
- * User Mutations
+ * Permission Mutations
  * ============
  *
- * The mutations available for the user module.
+ * The mutations available for the permission module.
  */
 
 export const ALL = 'ALL'

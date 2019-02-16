@@ -148,8 +148,31 @@ const destroyed = ({ commit }, user) => {
   commit(types.DESTROYED, UserTransformer.fetch(user))
 }
 
+/**
+ * Action fired when a user will be updated.
+ *
+ * @param {function} commit  Commit function to update the store.
+ * @param {string} uuid     Callback to edit the parameters on the proxy.
+ */
+const detail = ({ commit }, uuid) => {
+  proxy.find(uuid)
+    .then((response) => {
+      const data = {
+        user: UserTransformer.fetch(response)
+      }
+      commit(types.DETAIL, data)
+    })
+    .catch((error) => {
+      store.dispatch('application/addAlert', {
+        type: 'danger',
+        message: error.message
+      })
+    })
+}
+
 export default {
   all,
+  detail,
   create,
   created,
   update,

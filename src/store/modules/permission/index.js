@@ -1,5 +1,5 @@
 /* ============
- * User Module
+ * Permission Module
  * ============
  */
 

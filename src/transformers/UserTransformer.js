@@ -28,7 +28,10 @@ class CategoryTransformer extends Transformer {
       gender: user.gender,
       dateOfBirth: user.date_of_birth,
       birthPlace: user.birth_place,
-      address: user.address
+      startWorkingDate: user.start_working_date,
+      address: user.address,
+      roles: user.roles,
+      permissions: user.permissions
     })
   }
 
@@ -41,15 +44,20 @@ class CategoryTransformer extends Transformer {
     return {
       id: user.id,
       uuid: user.uuid,
+      staff_id: user.staffId,
       name: user.name,
       email: user.email,
       active: user.active,
+      email_verified_at: user.emailVerifiedAt,
       phone_number: user.phoneNumber,
       username: user.username,
       gender: user.gender,
       date_of_birth: user.dateOfBirth,
       birth_place: user.birthPlace,
-      address: user.address
+      start_working_date: user.startWorkingDate,
+      address: user.address,
+      roles: user.roles,
+      permissions: user.permissions
     }
   }
 }

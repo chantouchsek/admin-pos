@@ -1,8 +1,8 @@
 /* ============
- * User Mutations
+ * Permission Mutations
  * ============
  *
- * The mutations available for the user module.
+ * The mutations available for the permission module.
  */
 
 import store from '@/store'
@@ -16,68 +16,66 @@ import {
 
 export default {
   /**
-   * Mutation to update the store with the fetched users.
+   * Mutation to update the store with the fetched permissions.
    *
    * @param {Object} state      The current state of the store.
-   * @param {Array}  users    The fetched users.
+   * @param {Array}  permissions    The fetched permissions.
    * @param {Object} pagination The fetched pagination.
    */
-  [ALL] (state, { users, pagination }) {
-    state.all = users
+  [ALL] (state, { permissions, pagination }) {
+    state.all = permissions
     state.pagination = pagination
   },
 
   /**
-   * Mutation to update the store with the fetched user.
+   * Mutation to update the store with the fetched permission.
    *
    * @param {Object} state      The current state of the store.
-   * @param {Array}  user    The fetched users.
+   * @param {Array}  permission    The fetched permissions.
    */
-  [DETAIL] (state, { user }) {
-    state.detail = user
+  [DETAIL] (state, { permission }) {
+    state.detail = permission
   },
-
   /**
-   * Mutation to respond to the action when an user has been created.
+   * Mutation to respond to the action when an permission has been created.
    *
    * @param {Object} state   The current state of the store.
-   * @param {Object} user  The user that has been created.
+   * @param {Object} permissions  The permission that has been created.
    */
-  [CREATED] (state, user) {
+  [CREATED] (state, permissions) {
     const {
       totalCount,
       limit
     } = state.pagination
 
-    state.pagination.totalCount += 1
+    state.pagination.totalCount += permissions.length
 
     if (totalCount % limit === 0) {
       state.pagination.totalPages += 1
     }
 
     if (limit > state.all.length) {
-      state.all.push(user)
+      state.all.push(permissions)
     }
   },
 
   /**
-   * Mutation to respond to the action when an user has been updated.
+   * Mutation to respond to the action when an permission has been updated.
    *
    * @param {Object} state  The current state of the store.
-   * @param {Object} user The user that has been updated.
+   * @param {Object} permission The permission that has been updated.
    */
-  [UPDATED] (state, user) {
+  [UPDATED] (state, permission) {
     state.all = state.all.map((item) => {
-      if (item.id === user.id) {
-        return user
+      if (item.id === permission.id) {
+        return permission
       }
-
       return item
     })
   },
 
   /**
-   * Mutation to respond to the action when an user has been destroyed.
+   * Mutation to respond to the action when an permission has been destroyed.
    *
    * @param {Object} state The current state of the store.
    */
@@ -91,12 +89,12 @@ export default {
 
     let page = currentPage
 
-    // Check if the user is the last one on the page
+    // Check if the permission is the last one on the page
     if (totalPages === currentPage && currentPage !== 1 && totalCount % limit === 1) {
       page -= 1
     }
 
-    store.dispatch('user/all', (proxy) => {
+    store.dispatch('permission/all', (proxy) => {
       proxy.setParameter('page', page)
     })
   }

@@ -36,6 +36,7 @@ Vue.config.debug = process.env.NODE_ENV !== 'production';
 
 require('@/plugins')
 require('@/components')
+require('@/filters')
 
 require('offline-plugin/runtime').install()
 
