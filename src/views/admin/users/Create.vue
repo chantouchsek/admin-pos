@@ -10,6 +10,20 @@
           <strong>User Create </strong>
           <small>Form</small>
         </div>
+        <div class="avatar-upload">
+          <div class="avatar-edit" id="pick-avatar">
+            <label for="pick-avatar"></label>
+          </div>
+          <div class="avatar-preview">
+            <div id="imagePreview" :style="{ 'background-image': 'url(' + form.avatarUrl + ')' }">
+            </div>
+          </div>
+          <image-cropper
+            trigger="#pick-avatar"
+            :upload-handler="submitFile"
+            ref="avatarPicker"
+          ></image-cropper>
+        </div>
         <b-form-group label="Name:"
                       label-for="name"
                       :invalid-feedback="$errors.first('name')"
@@ -192,6 +206,12 @@
       },
       disabledDate (time) {
         return time > this.$moment()
+      },
+      /*
+      *  Submits the avatar to the server
+      */
+      submitFile (cropper) {
+        this.form.avatarUrl = cropper.getCroppedCanvas().toDataURL('image/png')
       }
     },
     /**

@@ -9,7 +9,7 @@
     >
 
       <b-media>
-        <b-img slot="aside" blank blank-color="#ccc" width="64" alt="placeholder"/>
+        <b-img slot="aside" :src="detail.avatarUrl" width="64" height="64" alt="placeholder"/>
         <h5 class="mt-0">{{ detail.name }}</h5>
         <p>
           Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
@@ -24,7 +24,7 @@
 
       <b-card-footer footer-border-variant="primary">
 
-        <b-button type="button" variant="primary" class="mr-1" :disabled="$errors.busy">
+        <b-button type="button" variant="primary" class="mr-1" :disabled="$errors.busy" :to="getEditRoute(detail.uuid)">
           <i class="fa fa-pencil-square-o"></i> Edit
         </b-button>
 
@@ -71,6 +71,19 @@
     methods: {
       goBack () {
         this.$router.push({ name: 'user.index' })
+      },
+      /**
+       * Method used to get the user route.
+       *
+       * @param {Number} uuid The user identifier.
+       *
+       * @returns {Object} The user route.
+       */
+      getEditRoute (uuid) {
+        return {
+          name: 'user.edit',
+          params: { uuid: uuid }
+        }
       }
     },
     /**

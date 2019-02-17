@@ -10,6 +10,20 @@
           <strong>User Edit </strong>
           <small>Form</small>
         </div>
+        <div class="avatar-upload">
+          <div class="avatar-edit" id="pick-avatar">
+            <label for="pick-avatar"></label>
+          </div>
+          <div class="avatar-preview">
+            <div id="imagePreview" :style="{ 'background-image': 'url(' + form.avatarUrl + ')' }">
+            </div>
+          </div>
+          <image-cropper
+            trigger="#pick-avatar"
+            :upload-handler="submitFile"
+            ref="avatarPicker"
+          ></image-cropper>
+        </div>
         <b-form-group label="Name:"
                       label-for="name"
                       :invalid-feedback="$errors.first('name')"
@@ -49,8 +63,19 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group label-cols-sm="2" label="Gender:" label-align-sm="left" class="mb-2">
-          <b-form-radio-group class="pt-2" :options="gender" v-model="form.gender"/>
+        <b-form-group label-cols-sm="2"
+                      label="Gender:"
+                      label-align-sm="left"
+                      class="mb-2"
+                      :invalid-feedback="$errors.first('gender')"
+                      label-for="gender"
+                      :state="!$errors.has('gender')"
+        >
+          <b-form-radio-group class="pt-2"
+                              :options="gender"
+                              v-model="form.gender"
+                              :state="!$errors.has('gender')"
+          />
         </b-form-group>
 
         <b-form-group label="Date Of Birth:"
@@ -207,6 +232,12 @@
       },
       disabledDate (time) {
         return time > this.$moment()
+      },
+      /*
+      *  Submits the avatar to the server
+      */
+      submitFile (cropper) {
+        this.form.avatarUrl = cropper.getCroppedCanvas().toDataURL('image/png')
       }
     },
     /**

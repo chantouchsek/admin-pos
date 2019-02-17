@@ -31,7 +31,8 @@ class CategoryTransformer extends Transformer {
       startWorkingDate: user.start_working_date,
       address: user.address,
       roles: user.roles,
-      permissions: user.permissions
+      permissions: user.permissions,
+      avatarUrl: user.avatar_url
     })
   }
 
@@ -57,7 +58,8 @@ class CategoryTransformer extends Transformer {
       start_working_date: user.startWorkingDate,
       address: user.address,
       roles: user.roles,
-      permissions: user.permissions
+      permissions: user.permissions,
+      avatar_url: user.avatarUrl
     }
   }
 }

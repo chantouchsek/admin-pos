@@ -5,6 +5,7 @@ import { en } from 'vuejs-datepicker/dist/locale'
 import BLoading from './BLoading'
 import TextareaAutosize from './TextareaAutosize'
 import DateTimePicker from './datetimepicker/Index'
+import ImageCropper from './cropper'
 
 let km = {
   dow: 7, // Sunday is the first day of the week
@@ -24,7 +25,8 @@ let km = {
 [
   VButton,
   BLoading,
-  TextareaAutosize
+  TextareaAutosize,
+  ImageCropper
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
