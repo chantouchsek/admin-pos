@@ -130,14 +130,29 @@
           </b-form-checkbox-group>
         </b-form-group>
 
-        <b-form-group label="Permissions:"
-                      :invalid-feedback="$errors.first('permissions')"
-                      label-for="permissions"
+        <b-form-group :invalid-feedback="$errors.first('permissions')"
                       :state="!$errors.has('permissions')"
         >
+          <template slot="label">
+            <h6>Choose Your Permissions:</h6>
+            <b-form-checkbox
+              v-model="allSelected"
+              switch
+              :indeterminate="indeterminate"
+              aria-describedby="permissions"
+              aria-controls="permissions"
+              @change="toggleAll"
+            >
+              {{ allSelected ? 'Un-select All' : 'Select All' }}
+            </b-form-checkbox>
+          </template>
+
           <b-form-checkbox-group id="permissions"
-                                 name="permissions"
+                                 switches
                                  v-model="form.permissions"
+                                 name="permissions"
+                                 class="ml-3"
+                                 aria-label="Individual Permissions"
                                  :state="!$errors.has('permissions')"
           >
             <b-form-checkbox v-for="(permissions,index) in permission.all"
@@ -197,7 +212,9 @@
         gender: [
           { value: 1, text: 'Male' },
           { value: 2, text: 'Female' }
-        ]
+        ],
+        allSelected: false,
+        indeterminate: false
       }
     },
     methods: {
@@ -238,6 +255,14 @@
       */
       submitFile (cropper) {
         this.form.avatarUrl = cropper.getCroppedCanvas().toDataURL('image/png')
+      },
+      toggleAll (checked) {
+        const vm = this
+        if (checked) {
+          vm.form.permissions = vm.permission.all.map(p => p.name)
+          return
+        }
+        vm.form.permissions = []
       }
     },
     /**
@@ -256,6 +281,20 @@
           })
         }
       })
+    },
+    watch: {
+      'form.permissions' (newVal, oldVal) {
+        if (newVal.length === 0) {
+          this.indeterminate = false
+          this.allSelected = false
+        } else if (newVal.length === this.permission.all.length) {
+          this.indeterminate = false
+          this.allSelected = true
+        } else {
+          this.indeterminate = true
+          this.allSelected = false
+        }
+      }
     },
     destroyed () {
       this.$errors.flush()

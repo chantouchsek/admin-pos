@@ -14,13 +14,13 @@
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
-    "@coreui/coreui": "^2.1.6",
+    "@coreui/coreui": "^2.1.7",
     "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
     "@coreui/icons": "^0.3.0",
     "@coreui/vue": "^2.1.2",
     "axios": "^0.19.0-beta.1",
     "bootstrap": "^4.3.1",
-    "bootstrap-vue": "^2.0.0-rc.12",
+    "bootstrap-vue": "^2.0.0-rc.13",
     "chart.js": "^2.7.3",
     "core-js": "^2.6.5",
     "cropperjs": "^1.4.3",
@@ -37,10 +37,10 @@
     "perfect-scrollbar": "^1.4.0",
     "pusher-js": "^4.4.0",
     "simple-line-icons": "^2.4.1",
-    "sweetalert2": "^8.0.7",
-    "vue": "^2.6.6",
+    "sweetalert2": "^8.2.3",
+    "vue": "^2.6.7",
     "vue-chartjs": "^3.4.0",
-    "vue-i18n": "^8.8.0",
+    "vue-i18n": "^8.8.2",
     "vue-loading-spinner": "^1.0.11",
     "vue-meta": "^1.5.8",
     "vue-perfect-scrollbar": "^0.1.0",
@@ -63,7 +63,7 @@
     "sass-loader": "^7.1.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
-    "vue-template-compiler": "^2.6.6"
+    "vue-template-compiler": "^2.6.7"
   },
   "browserslist": [
     "> 1%",

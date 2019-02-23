@@ -10,6 +10,7 @@ import store from '@/store'
 import Proxy from '@/proxies/PermissionProxy'
 import PermissionTransformer from '@/transformers/PermissionTransformer'
 import PaginationTransformer from '@/transformers/PaginationTransformer'
+import Vue from 'vue'
 
 const proxy = new Proxy()
 
@@ -51,7 +52,10 @@ const create = ({ commit }, permission) => {
         message: 'Permission has been created!'
       })
       store.dispatch('permission/created', response.data)
-      store.dispatch('navigator/pop')
+
+      Vue.router.push({
+        name: 'permission.index'
+      })
     })
     .catch(() => {
       store.dispatch('application/addAlert', {
@@ -87,7 +91,10 @@ const update = ({ commit }, permission) => {
         message: response.message
       })
       store.dispatch('permission/updated', response.data)
-      store.dispatch('navigator/pop')
+
+      Vue.router.push({
+        name: 'permission.index'
+      })
     })
     .catch(() => {
       store.dispatch('application/addAlert', {

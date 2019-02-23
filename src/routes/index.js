@@ -145,6 +145,80 @@ export default [
         ]
       },
       {
+        path: 'roles',
+        meta: { label: 'Roles' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'role.index',
+            meta: { label: 'Role List' },
+            component: load('admin/roles/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Role Create' },
+            name: 'role.create',
+            component: load('admin/roles/Create'),
+          },
+          {
+            path: ':id/show',
+            meta: { label: 'Role Edit' },
+            name: 'role.detail',
+            component: load('admin/roles/Show'),
+            props: true
+          },
+          {
+            path: ':id/edit',
+            meta: { label: 'Role Edit' },
+            name: 'role.edit',
+            component: load('admin/roles/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
+        path: 'permissions',
+        meta: { label: 'Permissions' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'permission.index',
+            meta: { label: 'Permission List' },
+            component: load('admin/permissions/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Permission Create' },
+            name: 'permission.create',
+            component: load('admin/permissions/Create'),
+          },
+          {
+            path: ':id/show',
+            meta: { label: 'Permission Detail' },
+            name: 'permission.show',
+            component: load('admin/permissions/Show'),
+            props: true
+          },
+          {
+            path: ':id/edit',
+            meta: { label: 'Permission Edit' },
+            name: 'permission.edit',
+            component: load('admin/permissions/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
         path: 'loading',
         name: 'Loading',
         component: Loading

@@ -19,7 +19,8 @@ class RoleTransformer extends Transformer {
       id: role.id,
       name: role.name,
       permissions: role.permissions,
-      users: role.users
+      users: role.users,
+      guardName: role.guard_name
     })
   }
 

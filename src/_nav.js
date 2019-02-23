@@ -232,15 +232,6 @@ export default {
       }
     },
     {
-      name : 'Loading',
-      url  : '/loading',
-      icon : 'icon-reload',
-      badge: {
-        variant: 'danger',
-        text   : 'HOT',
-      },
-    },
-    {
       divider: true
     },
     {
@@ -261,7 +252,16 @@ export default {
       url: '/roles',
       icon: 'fa fa-key',
       badge: {
-        variant: 'info',
+        variant: 'success',
+        text: 'NEW'
+      }
+    },
+    {
+      name: 'Permission',
+      url: '/permissions',
+      icon: 'fa fa-lock',
+      badge: {
+        variant: 'warning',
         text: 'NEW'
       }
     },

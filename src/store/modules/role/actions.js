@@ -10,6 +10,7 @@ import store from '@/store'
 import Proxy from '@/proxies/RoleProxy'
 import RoleTransformer from '@/transformers/RoleTransformer'
 import PaginationTransformer from '@/transformers/PaginationTransformer'
+import Vue from 'vue'
 
 const proxy = new Proxy()
 
@@ -51,7 +52,10 @@ const create = ({ commit }, role) => {
         message: 'Role has been created!'
       })
       store.dispatch('role/created', response.data)
-      store.dispatch('navigator/pop')
+
+      Vue.router.push({
+        name: 'role.index'
+      })
     })
     .catch(() => {
       store.dispatch('application/addAlert', {
@@ -87,7 +91,10 @@ const update = ({ commit }, role) => {
         message: response.message
       })
       store.dispatch('role/updated', response.data)
-      store.dispatch('navigator/pop')
+
+      Vue.router.push({
+        name: 'role.index'
+      })
     })
     .catch(() => {
       store.dispatch('application/addAlert', {

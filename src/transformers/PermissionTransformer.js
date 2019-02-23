@@ -19,7 +19,8 @@ class PermissionTransformer extends Transformer {
       id: permission.id,
       name: permission.name,
       roles: permission.roles,
-      users: permission.users
+      users: permission.users,
+      guardName: permission.guard_name
     })
   }
 

@@ -15,7 +15,7 @@
       <b-navbar-nav class="ml-auto">
         <b-nav-item class="d-md-down-none">
           <i class="icon-bell"></i>
-          <b-badge pill variant="danger">5</b-badge>
+          <b-badge pill variant="danger">{{ unreads.length }}</b-badge>
         </b-nav-item>
         <b-nav-item class="d-md-down-none">
           <i class="icon-list"></i>
@@ -41,14 +41,16 @@
         <Breadcrumb :list="list"/>
         <div class="container-fluid">
 
-          <b-alert :show="alert.dismissCountDown"
-                   dismissible
-                   :variant="alert.type"
-                   @dismissed="onDismissed"
-                   @dismiss-count-down="countDownChanged"
-          >
-            {{ alert.message }}
-          </b-alert>
+          <transition name="fade">
+            <b-alert :show="alert.dismissCountDown"
+                     dismissible
+                     :variant="alert.type"
+                     @dismissed="onDismissed"
+                     @dismiss-count-down="countDownChanged"
+            >
+              {{ alert.message }}
+            </b-alert>
+          </transition>
 
           <router-view></router-view>
 
@@ -126,7 +128,10 @@
       list () {
         return this.$route.matched.filter((route) => route.name || route.meta.label)
       },
-      ...mapGetters({ 'alert': 'application/alert' })
+      ...mapGetters({
+        'alert': 'application/alert',
+        'unreads': 'notification/unreads'
+      })
     },
     methods: {
       countDownChanged (dismissCountDown) {
