@@ -24,8 +24,8 @@ export default {
       icon: 'icon-drop'
     },
     {
-      name: 'Products',
-      url: '/theme/typography',
+      name: 'Stocks',
+      url: '/products/in-stocks',
       icon: 'icon-pencil'
     },
     {
@@ -43,6 +43,15 @@ export default {
       icon: 'icon-calculator',
       badge: {
         variant: 'primary',
+        text: 'NEW'
+      }
+    },
+    {
+      name: 'Product',
+      url: '/products',
+      icon: 'icon-notebook',
+      badge: {
+        variant: 'danger',
         text: 'NEW'
       }
     },
@@ -262,6 +271,42 @@ export default {
       icon: 'fa fa-lock',
       badge: {
         variant: 'warning',
+        text: 'NEW'
+      }
+    },
+    {
+      name: 'GiftCards',
+      url: '/gift-cards',
+      icon: 'fa fa-id-card',
+      badge: {
+        variant: 'info',
+        text: 'NEW'
+      }
+    },
+    {
+      name: 'Expenses',
+      url: '/expenses',
+      icon: 'fa fa-money',
+      badge: {
+        variant: 'warning',
+        text: 'NEW'
+      }
+    },
+    {
+      name: 'Suppliers',
+      url: '/suppliers',
+      icon: 'fa fa-truck',
+      badge: {
+        variant: 'primary',
+        text: 'NEW'
+      }
+    },
+    {
+      name: 'Customers',
+      url: '/customers',
+      icon: 'fa fa-user',
+      badge: {
+        variant: 'primary',
         text: 'NEW'
       }
     },

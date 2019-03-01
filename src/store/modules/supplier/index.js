@@ -1,5 +1,5 @@
 /* ============
- * Category Module
+ * Supplier Module
  * ============
  */
 

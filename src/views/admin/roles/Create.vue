@@ -31,37 +31,26 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-
   export default {
     /**
      * The properties that can be used.
      */
-    name: 'UserCreate',
+    name: 'RoleCreate',
     middleware: 'auth',
     metaInfo () {
       return { title: this.$t('settings') }
     },
     scrollToTop: true,
-    computed: {
-      ...mapState(['role', 'permission'])
-    },
     data () {
       return {
         form: {},
-        show: true,
-        gender: [
-          { value: 1, text: 'Male' },
-          { value: 2, text: 'Female' }
-        ],
-        allSelected: false,
-        indeterminate: false
+        show: true
       }
     },
     methods: {
       async onSubmit (evt) {
         evt.preventDefault()
-        await this.$store.dispatch('user/create', this.form)
+        await this.$store.dispatch('role/create', this.form)
       },
       onReset (evt) {
         const vm = this
@@ -73,24 +62,7 @@
         })
       },
       goBack () {
-        this.$router.push({ name: 'user.index' })
-      },
-      disabledDate (time) {
-        return time > this.$moment()
-      },
-      /*
-      *  Submits the avatar to the server
-      */
-      submitFile (cropper) {
-        this.form.avatarUrl = cropper.getCroppedCanvas().toDataURL('image/png')
-      },
-      toggleAll (checked) {
-        const vm = this
-        if (checked) {
-          vm.form.permissions = vm.permission.all.map(p => p.name)
-          return
-        }
-        vm.form.permissions = []
+        this.$router.push({ name: 'role.index' })
       }
     },
     /**
@@ -100,28 +72,9 @@
       const vm = this
       await vm.$store.watch((state) => {
         if (state.auth.authenticated) {
-          vm.$store.dispatch('role/all', (proxy) => {
-            proxy.removeParameters(['page', 'q', 'direction', 'sort'])
-          })
-          vm.$store.dispatch('permission/all', (proxy) => {
-            proxy.removeParameters(['page', 'q', 'direction', 'sort'])
-          })
+          //
         }
       })
-    },
-    watch: {
-      'form.permissions' (newVal, oldVal) {
-        if (newVal.length === 0) {
-          this.indeterminate = false
-          this.allSelected = false
-        } else if (newVal.length === this.permission.all.length) {
-          this.indeterminate = false
-          this.allSelected = true
-        } else {
-          this.indeterminate = true
-          this.allSelected = false
-        }
-      }
     },
     destroyed () {
       this.$errors.flush()

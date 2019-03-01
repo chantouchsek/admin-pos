@@ -3,19 +3,25 @@
     <transition name="fade">
       <b-card header-tag="header" class="card-accent-success">
         <div slot="header">
-          <i class="icon-list"></i> Categories
+          <i class="icon-list"></i> Products In Stock
           <div class="card-header-actions">
-            <b-link href="#" class="card-header-action btn-setting mr-1" @click.prevent="reloadResource"
+            <b-link href="#" class="card-header-action mr-1" @click.prevent="reloadResource"
                     v-b-tooltip.hover
                     title="Reload"
             >
               <i class="icon-refresh"></i>
             </b-link>
-            <b-link href="#" class="card-header-action btn-close" :to="{ name: 'category.create' }"
+            <b-link href="#" class="card-header-action mr-1" :to="{ name: 'product.create' }"
                     v-b-tooltip.hover
-                    title="New Category"
+                    title="New Product"
             >
               <i class="icon-plus"></i>
+            </b-link>
+            <b-link href="#" class="card-header-action" :to="{ name: 'product.import' }"
+                    v-b-tooltip.hover
+                    title="Import Products"
+            >
+              <i class="fa fa-file-excel-o"></i>
             </b-link>
           </div>
         </div>
@@ -31,25 +37,16 @@
               </b-input-group>
             </b-form-group>
           </b-col>
-          <b-col md="6" class="mb-2 mt-2">
-            <b-form-checkbox
-              id="active"
-              v-model="active"
-              value="0"
-              unchecked-value="1"
-              switch
-              @input="setQuery(query)"
-              :disabled="$errors.busy"
-            >
-              InActive
-            </b-form-checkbox>
-          </b-col>
         </b-row>
         <b-table :show-empty="true"
-                 bordered
                  :responsive="true"
-                 :items="category.all"
+                 :items="product.all"
                  :fields="fields"
+                 bordered
+                 outlined
+                 striped
+                 hover
+                 fixed
                  :current-page="currentPage"
                  :filter="query"
                  :sort-by.sync="sortBy"
@@ -60,28 +57,25 @@
                  :no-provider-sorting="true"
                  :no-provider-filtering="true"
         >
+          <!--<template slot="file" slot-scope="row">-->
+          <!--<b-img :src="row.item.file" fluid :alt="row.item.name" width="40" height="40"/>-->
+          <!--</template>-->
           <template slot="actions" slot-scope="row">
-            <b-button size="sm"
-                      class="mr-1"
-                      :to="getEditRoute(row.item.uuid)"
-                      variant="primary"
-                      v-b-tooltip
-                      title="Edit"
-            >
-              <i class="fa fa-edit"></i>
-            </b-button>
-          </template>
-          <template slot="active" slot-scope="row">
-            <b-badge v-if="row.item.active" variant="success">Active</b-badge>
-            <b-badge v-else variant="warning">InActive</b-badge>
+            <b-dropdown split class="m-2" @click="getViewRoute(row.item.uuid)">
+              <template slot="button-content">
+                <i class="fa fa-search-plus"></i> View
+              </template>
+              <b-dropdown-item :to="getEditRoute(row.item.uuid)"><i class="fa fa-edit"></i> Edit</b-dropdown-item>
+              <b-dropdown-item href="#"><i class="fa fa-trash"></i> Delete</b-dropdown-item>
+            </b-dropdown>
           </template>
         </b-table>
         <b-row>
           <b-col md="6" class="my-1">
             <b-pagination
-              :total-rows="category.pagination.totalCount"
+              :total-rows="product.pagination.totalCount"
               :per-page="limit"
-              v-model="currentPage"
+              v-model.number="currentPage"
               class="my-0"
               :disabled="$errors.busy"
             ></b-pagination>
@@ -107,31 +101,37 @@
   import debounce from 'lodash.debounce'
 
   export default {
-    name: 'categories-index',
+    name: 'products-in-stock',
     middleware: ['auth'],
     metaInfo () {
-      return { title: this.$t('settings') }
+      return { title: this.$t('users.title') }
     },
     scrollToTop: true,
     data: () => {
       return {
         fields: [
+          { key: 'id', label: 'ID', sortable: true },
+          // { key: 'file', label: 'Image', sortable: true },
           { key: 'name', label: 'Name', sortable: true },
-          { key: 'description', label: 'Description', sortable: true },
-          { key: 'active', label: 'Active', sortable: true },
+          { key: 'price', label: 'Price', sortable: true },
+          { key: 'cost', label: 'Cost', sortable: true },
+          { key: 'sku', label: 'SKU', sortable: true },
+          { key: 'importedDate', label: 'Imported Date', sortable: true },
+          { key: 'expiredAt', label: 'Expired At', sortable: true },
           { key: 'actions', label: 'Action' }
         ],
         sortable: {
           name: 'name',
-          description: 'description',
-          active: 'active'
+          price: 'price',
+          cost: 'cost',
+          sku: 'sku',
+          importedDate: 'imported_date',
+          expiredAt: 'expired_at'
         },
         query: null,
         pageNumbers: [5, 10, 20, 30, 50, 500],
         sortBy: 'name',
-        sortDesc: false,
-        show: true,
-        active: 1
+        sortDesc: false
       }
     },
 
@@ -139,10 +139,10 @@
      * The computed properties the page can use.
      */
     computed: {
-      ...mapState(['category']),
+      ...mapState(['product']),
       limit: {
         get () {
-          return this.category.pagination.limit
+          return this.product.pagination.limit
         },
         set (limit) {
           this.setLimit(limit)
@@ -150,7 +150,7 @@
       },
       currentPage: {
         get () {
-          return this.category.pagination.currentPage
+          return this.product.pagination.currentPage
         },
         set (page) {
           this.setPage(page)
@@ -165,20 +165,47 @@
        * The method use track the table sort changed.
        */
       sortingChanged (ctx) {
-        this.sortBy = ctx.sortBy
-        this.sortDesc = ctx.sortDesc
-        this.setQuery(this.query)
+        const vm = this
+        vm.sortBy = ctx.sortBy
+        vm.sortDesc = ctx.sortDesc
+        vm.setQuery(vm.query)
       },
       /**
-       * Method used to get the category route.
+       * Method used to get the product route.
        *
-       * @param {Number} uuid The category identifier.
+       * @param {Number} uuid The product identifier.
        *
-       * @returns {Object} The category route.
+       * @returns {Object} The product route.
        */
       getEditRoute (uuid) {
         return {
-          name: 'category.edit',
+          name: 'product.edit',
+          params: { uuid: uuid }
+        }
+      },
+      /**
+       * Method used to get the attribute route.
+       *
+       * @param {Number} id The attribute identifier.
+       *
+       * @returns {Object} The attribute route.
+       */
+      getViewRoute (id) {
+        return this.$router.push({
+          name: 'product.show',
+          params: { uuid: id }
+        })
+      },
+      /**
+       * Method used to get the product route.
+       *
+       * @param {Number} uuid The product identifier.
+       *
+       * @returns {Object} The product route.
+       */
+      getDetailRoute (uuid) {
+        return {
+          name: 'product.show',
           params: { uuid: uuid }
         }
       },
@@ -188,7 +215,7 @@
        * @param {Number} page The page number.
        */
       setPage (page) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('product/all', (proxy) => {
           proxy.setParameter('page', page)
         })
       },
@@ -198,7 +225,7 @@
        * @param {Number} limit The limit of items being displayed.
        */
       setLimit (limit) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('product/all', (proxy) => {
           proxy.setParameter('limit', limit)
             .removeParameter('page')
         })
@@ -207,32 +234,24 @@
        * Method used to set the query of the search bar.
        * The results will be debounced using the lodash debounce method.
        */
-      setQuery: debounce(async function (query) {
+      setQuery: debounce(function (query) {
         const vm = this
-        await vm.$store.dispatch('category/all', (proxy) => {
+        vm.$store.dispatch('product/all', (proxy) => {
           proxy.setParameters({
-            'q': query,
-            'direction': vm.sortDesc ? 'desc' : 'asc',
-            'sort': vm.sortable[vm.sortBy],
-            active: vm.active
-          })
-            .removeParameter('page')
+            q: query,
+            direction: vm.sortDesc ? 'desc' : 'asc',
+            sort: vm.sortable[vm.sortBy]
+          }).removeParameter('page')
         })
       }, 500),
       /**
        * Reload the resource
        */
       reloadResource: debounce(function () {
-        this.$store.dispatch('category/all', (proxy) => {
-          proxy.removeParameters(['page', 'q', 'direction', 'sort', 'active'])
+        this.$store.dispatch('product/all', (proxy) => {
+          proxy.removeParameters(['page', 'q', 'direction', 'sort'])
         })
-      }, 500),
-      /**
-       * Delete the resource
-       */
-      destroy (category) {
-        this.$store.dispatch('category/destroy', category)
-      }
+      }, 500)
     },
     /**
      * This method will be fired once the application has been mounted.
@@ -241,9 +260,9 @@
       const vm = this
       await vm.$store.watch((state) => {
         if (state.auth.authenticated) {
-          vm.$store.dispatch('category/all', (proxy) => {
-            proxy.removeParameters(['page', 'q', 'direction', 'sort', 'all'])
-              .setParameters({ 'active': vm.active })
+          vm.$store.dispatch('product/all', (proxy) => {
+            proxy.removeParameters(['page', 'q', 'direction', 'sort'])
+              .setParameters({ 'in_stock': true })
           })
         }
       })

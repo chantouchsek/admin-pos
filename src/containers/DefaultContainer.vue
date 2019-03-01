@@ -14,6 +14,9 @@
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-item class="d-md-down-none">
+          {{ currentTime }}
+        </b-nav-item>
+        <b-nav-item class="d-md-down-none">
           <i class="icon-bell"></i>
           <b-badge pill variant="danger">{{ unreads.length }}</b-badge>
         </b-nav-item>
@@ -118,7 +121,8 @@
     },
     data () {
       return {
-        nav: nav.items
+        nav: nav.items,
+        currentTime: null
       }
     },
     computed: {
@@ -141,6 +145,9 @@
         const vm = this
         await vm.$store.dispatch('application/countDownChanged', 0)
         await vm.$store.dispatch('application/removeAlert')
+      },
+      updateCurrentTime () {
+        this.currentTime = this.$moment().format('LLLL');
       }
     },
     /**
@@ -153,6 +160,8 @@
           // vm.$store.dispatch('application/alert')
         }
       })
+      this.currentTime = this.$moment().format('LLLL');
+      setInterval(() => this.updateCurrentTime(), 1000);
     }
   }
 </script>

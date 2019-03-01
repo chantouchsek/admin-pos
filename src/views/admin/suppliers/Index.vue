@@ -3,7 +3,7 @@
     <transition name="fade">
       <b-card header-tag="header" class="card-accent-success">
         <div slot="header">
-          <i class="icon-list"></i> Categories
+          <i class="icon-list"></i> Suppliers
           <div class="card-header-actions">
             <b-link href="#" class="card-header-action btn-setting mr-1" @click.prevent="reloadResource"
                     v-b-tooltip.hover
@@ -11,9 +11,9 @@
             >
               <i class="icon-refresh"></i>
             </b-link>
-            <b-link href="#" class="card-header-action btn-close" :to="{ name: 'category.create' }"
+            <b-link href="#" class="card-header-action btn-close" :to="{ name: 'supplier.create' }"
                     v-b-tooltip.hover
-                    title="New Category"
+                    title="New Supplier"
             >
               <i class="icon-plus"></i>
             </b-link>
@@ -31,24 +31,11 @@
               </b-input-group>
             </b-form-group>
           </b-col>
-          <b-col md="6" class="mb-2 mt-2">
-            <b-form-checkbox
-              id="active"
-              v-model="active"
-              value="0"
-              unchecked-value="1"
-              switch
-              @input="setQuery(query)"
-              :disabled="$errors.busy"
-            >
-              InActive
-            </b-form-checkbox>
-          </b-col>
         </b-row>
         <b-table :show-empty="true"
                  bordered
                  :responsive="true"
-                 :items="category.all"
+                 :items="supplier.all"
                  :fields="fields"
                  :current-page="currentPage"
                  :filter="query"
@@ -71,15 +58,11 @@
               <i class="fa fa-edit"></i>
             </b-button>
           </template>
-          <template slot="active" slot-scope="row">
-            <b-badge v-if="row.item.active" variant="success">Active</b-badge>
-            <b-badge v-else variant="warning">InActive</b-badge>
-          </template>
         </b-table>
         <b-row>
           <b-col md="6" class="my-1">
             <b-pagination
-              :total-rows="category.pagination.totalCount"
+              :total-rows="supplier.pagination.totalCount"
               :per-page="limit"
               v-model="currentPage"
               class="my-0"
@@ -107,7 +90,7 @@
   import debounce from 'lodash.debounce'
 
   export default {
-    name: 'categories-index',
+    name: 'suppliers-index',
     middleware: ['auth'],
     metaInfo () {
       return { title: this.$t('settings') }
@@ -117,21 +100,22 @@
       return {
         fields: [
           { key: 'name', label: 'Name', sortable: true },
-          { key: 'description', label: 'Description', sortable: true },
-          { key: 'active', label: 'Active', sortable: true },
+          { key: 'email', label: 'Email', sortable: true },
+          { key: 'phoneNumber', label: 'Phone number', sortable: true },
+          { key: 'address', label: 'Address', sortable: true },
           { key: 'actions', label: 'Action' }
         ],
         sortable: {
           name: 'name',
-          description: 'description',
-          active: 'active'
+          email: 'email',
+          phoneNumber: 'phone_number',
+          address: 'address'
         },
         query: null,
         pageNumbers: [5, 10, 20, 30, 50, 500],
         sortBy: 'name',
         sortDesc: false,
-        show: true,
-        active: 1
+        show: true
       }
     },
 
@@ -139,10 +123,10 @@
      * The computed properties the page can use.
      */
     computed: {
-      ...mapState(['category']),
+      ...mapState(['supplier']),
       limit: {
         get () {
-          return this.category.pagination.limit
+          return this.supplier.pagination.limit
         },
         set (limit) {
           this.setLimit(limit)
@@ -150,7 +134,7 @@
       },
       currentPage: {
         get () {
-          return this.category.pagination.currentPage
+          return this.supplier.pagination.currentPage
         },
         set (page) {
           this.setPage(page)
@@ -170,15 +154,15 @@
         this.setQuery(this.query)
       },
       /**
-       * Method used to get the category route.
+       * Method used to get the supplier route.
        *
-       * @param {Number} uuid The category identifier.
+       * @param {Number} uuid The supplier identifier.
        *
-       * @returns {Object} The category route.
+       * @returns {Object} The supplier route.
        */
       getEditRoute (uuid) {
         return {
-          name: 'category.edit',
+          name: 'supplier.edit',
           params: { uuid: uuid }
         }
       },
@@ -188,7 +172,7 @@
        * @param {Number} page The page number.
        */
       setPage (page) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('supplier/all', (proxy) => {
           proxy.setParameter('page', page)
         })
       },
@@ -198,7 +182,7 @@
        * @param {Number} limit The limit of items being displayed.
        */
       setLimit (limit) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('supplier/all', (proxy) => {
           proxy.setParameter('limit', limit)
             .removeParameter('page')
         })
@@ -209,12 +193,11 @@
        */
       setQuery: debounce(async function (query) {
         const vm = this
-        await vm.$store.dispatch('category/all', (proxy) => {
+        await vm.$store.dispatch('supplier/all', (proxy) => {
           proxy.setParameters({
             'q': query,
             'direction': vm.sortDesc ? 'desc' : 'asc',
-            'sort': vm.sortable[vm.sortBy],
-            active: vm.active
+            'sort': vm.sortable[vm.sortBy]
           })
             .removeParameter('page')
         })
@@ -223,15 +206,15 @@
        * Reload the resource
        */
       reloadResource: debounce(function () {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('supplier/all', (proxy) => {
           proxy.removeParameters(['page', 'q', 'direction', 'sort', 'active'])
         })
       }, 500),
       /**
        * Delete the resource
        */
-      destroy (category) {
-        this.$store.dispatch('category/destroy', category)
+      destroy (supplier) {
+        this.$store.dispatch('supplier/destroy', supplier)
       }
     },
     /**
@@ -241,9 +224,8 @@
       const vm = this
       await vm.$store.watch((state) => {
         if (state.auth.authenticated) {
-          vm.$store.dispatch('category/all', (proxy) => {
+          vm.$store.dispatch('supplier/all', (proxy) => {
             proxy.removeParameters(['page', 'q', 'direction', 'sort', 'all'])
-              .setParameters({ 'active': vm.active })
           })
         }
       })

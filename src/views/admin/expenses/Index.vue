@@ -3,7 +3,7 @@
     <transition name="fade">
       <b-card header-tag="header" class="card-accent-success">
         <div slot="header">
-          <i class="icon-list"></i> Categories
+          <i class="icon-list"></i> Expenses
           <div class="card-header-actions">
             <b-link href="#" class="card-header-action btn-setting mr-1" @click.prevent="reloadResource"
                     v-b-tooltip.hover
@@ -11,7 +11,7 @@
             >
               <i class="icon-refresh"></i>
             </b-link>
-            <b-link href="#" class="card-header-action btn-close" :to="{ name: 'category.create' }"
+            <b-link href="#" class="card-header-action btn-close" :to="{ name: 'expense.create' }"
                     v-b-tooltip.hover
                     title="New Category"
             >
@@ -31,24 +31,11 @@
               </b-input-group>
             </b-form-group>
           </b-col>
-          <b-col md="6" class="mb-2 mt-2">
-            <b-form-checkbox
-              id="active"
-              v-model="active"
-              value="0"
-              unchecked-value="1"
-              switch
-              @input="setQuery(query)"
-              :disabled="$errors.busy"
-            >
-              InActive
-            </b-form-checkbox>
-          </b-col>
         </b-row>
         <b-table :show-empty="true"
                  bordered
                  :responsive="true"
-                 :items="category.all"
+                 :items="expense.all"
                  :fields="fields"
                  :current-page="currentPage"
                  :filter="query"
@@ -71,15 +58,14 @@
               <i class="fa fa-edit"></i>
             </b-button>
           </template>
-          <template slot="active" slot-scope="row">
-            <b-badge v-if="row.item.active" variant="success">Active</b-badge>
-            <b-badge v-else variant="warning">InActive</b-badge>
+          <template slot="notes" slot-scope="row">
+            <p v-html="row.item.notes"></p>
           </template>
         </b-table>
         <b-row>
           <b-col md="6" class="my-1">
             <b-pagination
-              :total-rows="category.pagination.totalCount"
+              :total-rows="expense.pagination.totalCount"
               :per-page="limit"
               v-model="currentPage"
               class="my-0"
@@ -107,7 +93,7 @@
   import debounce from 'lodash.debounce'
 
   export default {
-    name: 'categories-index',
+    name: 'expenses-index',
     middleware: ['auth'],
     metaInfo () {
       return { title: this.$t('settings') }
@@ -116,19 +102,23 @@
     data: () => {
       return {
         fields: [
-          { key: 'name', label: 'Name', sortable: true },
-          { key: 'description', label: 'Description', sortable: true },
-          { key: 'active', label: 'Active', sortable: true },
+          { key: 'id', label: 'ID', sortable: true },
+          { key: 'date', label: 'Date', sortable: true },
+          { key: 'amount', label: 'Amount', sortable: true },
+          { key: 'reference', label: 'Reference', sortable: true },
+          { key: 'notes', label: 'Notes', sortable: true },
           { key: 'actions', label: 'Action' }
         ],
         sortable: {
-          name: 'name',
-          description: 'description',
-          active: 'active'
+          id: 'id',
+          date: 'date',
+          amount: 'amount',
+          notes: 'notes',
+          reference: 'reference'
         },
         query: null,
         pageNumbers: [5, 10, 20, 30, 50, 500],
-        sortBy: 'name',
+        sortBy: 'amount',
         sortDesc: false,
         show: true,
         active: 1
@@ -139,10 +129,10 @@
      * The computed properties the page can use.
      */
     computed: {
-      ...mapState(['category']),
+      ...mapState(['expense']),
       limit: {
         get () {
-          return this.category.pagination.limit
+          return this.expense.pagination.limit
         },
         set (limit) {
           this.setLimit(limit)
@@ -150,11 +140,19 @@
       },
       currentPage: {
         get () {
-          return this.category.pagination.currentPage
+          return this.expense.pagination.currentPage
         },
         set (page) {
           this.setPage(page)
         }
+      },
+      sortOptions () {
+        // Create an options list from our fields
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
       }
     },
     /**
@@ -170,15 +168,15 @@
         this.setQuery(this.query)
       },
       /**
-       * Method used to get the category route.
+       * Method used to get the expense route.
        *
-       * @param {Number} uuid The category identifier.
+       * @param {Number} uuid The expense identifier.
        *
-       * @returns {Object} The category route.
+       * @returns {Object} The expense route.
        */
       getEditRoute (uuid) {
         return {
-          name: 'category.edit',
+          name: 'expense.edit',
           params: { uuid: uuid }
         }
       },
@@ -188,7 +186,7 @@
        * @param {Number} page The page number.
        */
       setPage (page) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('expense/all', (proxy) => {
           proxy.setParameter('page', page)
         })
       },
@@ -198,7 +196,7 @@
        * @param {Number} limit The limit of items being displayed.
        */
       setLimit (limit) {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('expense/all', (proxy) => {
           proxy.setParameter('limit', limit)
             .removeParameter('page')
         })
@@ -209,7 +207,7 @@
        */
       setQuery: debounce(async function (query) {
         const vm = this
-        await vm.$store.dispatch('category/all', (proxy) => {
+        await vm.$store.dispatch('expense/all', (proxy) => {
           proxy.setParameters({
             'q': query,
             'direction': vm.sortDesc ? 'desc' : 'asc',
@@ -223,15 +221,15 @@
        * Reload the resource
        */
       reloadResource: debounce(function () {
-        this.$store.dispatch('category/all', (proxy) => {
+        this.$store.dispatch('expense/all', (proxy) => {
           proxy.removeParameters(['page', 'q', 'direction', 'sort', 'active'])
         })
       }, 500),
       /**
        * Delete the resource
        */
-      destroy (category) {
-        this.$store.dispatch('category/destroy', category)
+      destroy (expense) {
+        this.$store.dispatch('expense/destroy', expense)
       }
     },
     /**
@@ -241,9 +239,8 @@
       const vm = this
       await vm.$store.watch((state) => {
         if (state.auth.authenticated) {
-          vm.$store.dispatch('category/all', (proxy) => {
+          vm.$store.dispatch('expense/all', (proxy) => {
             proxy.removeParameters(['page', 'q', 'direction', 'sort', 'all'])
-              .setParameters({ 'active': vm.active })
           })
         }
       })

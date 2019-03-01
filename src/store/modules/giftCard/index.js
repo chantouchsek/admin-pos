@@ -1,5 +1,5 @@
 /* ============
- * Category Module
+ * GiftCard Module
  * ============
  */
 

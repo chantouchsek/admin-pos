@@ -145,6 +145,56 @@ export default [
         ]
       },
       {
+        path: 'products',
+        meta: { label: 'Products' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'product.index',
+            meta: { label: 'Table' },
+            component: load('admin/products/Index'),
+          },
+          {
+            path: 'in-stocks',
+            name: 'product.in-stock',
+            meta: { label: 'Table' },
+            component: load('admin/stocks/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Create' },
+            name: 'product.create',
+            component: load('admin/products/Create'),
+          },
+          {
+            path: ':uuid/show',
+            meta: { label: 'Detail' },
+            name: 'product.show',
+            component: load('admin/products/Show'),
+            props: true
+          },
+          {
+            path: 'imports',
+            meta: { label: 'Imports' },
+            name: 'product.import',
+            component: load('admin/products/Import'),
+            props: true
+          },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'Edit' },
+            name: 'product.edit',
+            component: load('admin/products/Edit'),
+            props: true
+          },
+        ]
+      },
+      {
         path: 'roles',
         meta: { label: 'Roles' },
         component: {
@@ -214,6 +264,126 @@ export default [
             meta: { label: 'Permission Edit' },
             name: 'permission.edit',
             component: load('admin/permissions/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
+        path: 'gift-cards',
+        meta: { label: 'GiftCards' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'giftCard.index',
+            meta: { label: 'GiftCard List' },
+            component: load('admin/giftCards/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'GiftCard Create' },
+            name: 'giftCard.create',
+            component: load('admin/giftCards/Create'),
+          },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'GiftCard Edit' },
+            name: 'giftCard.edit',
+            component: load('admin/giftCards/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
+        path: 'expenses',
+        meta: { label: 'Expenses' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'expense.index',
+            meta: { label: 'Expense List' },
+            component: load('admin/expenses/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Expense Create' },
+            name: 'expense.create',
+            component: load('admin/expenses/Create'),
+          },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'Expense Edit' },
+            name: 'expense.edit',
+            component: load('admin/expenses/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
+        path: 'suppliers',
+        meta: { label: 'Suppliers' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'supplier.index',
+            meta: { label: 'Supplier List' },
+            component: load('admin/suppliers/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Supplier Create' },
+            name: 'supplier.create',
+            component: load('admin/suppliers/Create'),
+          },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'Supplier Edit' },
+            name: 'supplier.edit',
+            component: load('admin/suppliers/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
+        path: 'customers',
+        meta: { label: 'Customers' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'customer.index',
+            meta: { label: 'Customer List' },
+            component: load('admin/customers/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Customer Create' },
+            name: 'customer.create',
+            component: load('admin/customers/Create'),
+          },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'Customer Edit' },
+            name: 'customer.edit',
+            component: load('admin/customers/Edit'),
             props: true
           }
         ]
