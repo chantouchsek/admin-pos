@@ -9,18 +9,22 @@
         <b-form-group label="Name:"
                       label-for="name"
                       :invalid-feedback="$errors.first('name')"
+                      :state="!$errors.has('name')"
         >
           <b-form-input id="name"
                         type="text"
                         v-model="form.name"
                         :state="!$errors.has('name')"
-                        placeholder="Enter name">
+                        placeholder="Enter name"
+                        name="name"
+          >
           </b-form-input>
 
         </b-form-group>
         <b-form-group label="Description:"
                       label-for="description"
                       :invalid-feedback="$errors.first('description')"
+                      :state="!$errors.has('description')"
         >
           <textarea-autosize v-model="form.description"
                              input-name="description"

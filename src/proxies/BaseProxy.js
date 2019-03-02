@@ -81,7 +81,7 @@ class BaseProxy {
    */
   submit (requestType, url, data = null) {
     Errors.busy = true
-    Errors.success = true
+    Errors.success = false
     return new Promise((resolve, reject) => {
       Vue.$http[requestType](url + this.getParameterString(), data)
         .then((response) => {

@@ -1,3 +1,5 @@
 import './camelCase'
 import './upperCase'
 import './removeHyphen'
+import './cartSize'
+import './currency'

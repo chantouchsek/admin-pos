@@ -389,9 +389,44 @@ export default [
         ]
       },
       {
+        path: 'purchases',
+        meta: { label: 'Customers' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'purchase.index',
+            meta: { label: 'Purchase List' },
+            component: load('admin/purchases/Index'),
+          },
+          {
+            path: 'create',
+            meta: { label: 'Purchase Create' },
+            name: 'purchase.create',
+            component: load('admin/purchases/Create'),
+          },
+          {
+            path: ':uuid/edit',
+            meta: { label: 'Purchase Edit' },
+            name: 'purchase.edit',
+            component: load('admin/purchases/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
         path: 'loading',
         name: 'Loading',
         component: Loading
+      },
+      {
+        path: 'pos',
+        name: 'POS',
+        component: load('pos/Index')
       },
       {
         path: 'users',

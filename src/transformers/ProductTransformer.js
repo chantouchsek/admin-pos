@@ -29,12 +29,12 @@ class ProductTransformer extends Transformer {
       categoryId: product.category_id,
       category: product.category,
       user: product.user,
-      attributes: product.attributes,
       file: product.file,
       taxRate: product.tax_rate,
       taxMethod: product.tax_method,
       qty: product.qty,
-      qtyMethod: product.qty_method
+      qtyMethod: product.qty_method,
+      updatedAt: product.updated_at
     })
   }
 

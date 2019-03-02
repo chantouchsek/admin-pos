@@ -30,7 +30,7 @@
         <DefaultHeaderDropdownAccnt/>
       </b-navbar-nav>
       <AsideToggler class="d-none d-lg-block"/>
-      <!--<AsideToggler class="d-lg-none" mobile />-->
+      <AsideToggler class="d-lg-none" mobile/>
     </AppHeader>
     <div class="app-body">
       <AppSidebar fixed>
@@ -68,7 +68,7 @@
       <!--footer-->
       <div>
         <a href="https://bookingkh.com">BookingKH</a>
-        <span class="ml-1">&copy; 2018 booking kh.</span>
+        <span class="ml-1">&copy; 2018 Booking KH.</span>
       </div>
       <div class="ml-auto">
         <span class="mr-1">Powered by</span>

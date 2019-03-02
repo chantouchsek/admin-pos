@@ -20,7 +20,7 @@ export default {
     },
     {
       name: 'P.O.S',
-      url: '/theme/colors',
+      url: '/pos',
       icon: 'icon-drop'
     },
     {
@@ -304,6 +304,15 @@ export default {
     {
       name: 'Customers',
       url: '/customers',
+      icon: 'fa fa-user',
+      badge: {
+        variant: 'primary',
+        text: 'NEW'
+      }
+    },
+    {
+      name: 'Purchases',
+      url: '/purchases',
       icon: 'fa fa-user',
       badge: {
         variant: 'primary',

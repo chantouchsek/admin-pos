@@ -46,20 +46,23 @@ const create = ({ commit }, customer) => {
   const transformedCustomer = CustomerTransformer.send(customer)
 
   proxy.create(transformedCustomer)
-    .then(() => {
+    .then((response) => {
       store.dispatch('application/addAlert', {
         type: 'success',
-        message: 'Customer has been created!'
+        message: response.message
       })
-
+      if (customer.inLine) {
+        store.dispatch('customer/created', response.data)
+        return
+      }
       Vue.router.push({
         name: 'customer.index'
       })
     })
-    .catch(() => {
+    .catch((error) => {
       store.dispatch('application/addAlert', {
         type: 'danger',
-        message: 'The customer could not be created'
+        message: error.message
       })
     })
 }

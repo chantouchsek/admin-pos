@@ -14,6 +14,29 @@ import RevisionTransformer from '@/transformers/RevisionTransformer'
 import Vue from 'vue'
 
 const proxy = new Proxy()
+
+/**
+ * Action fired when all products will be fetched.
+ *
+ * @param {function} commit Commit function to update the store.
+ * @param {function} fn     Callback to edit the parameters on the proxy.
+ */
+const all = async ({ commit }, fn = null) => {
+  if (typeof fn === 'function') {
+    fn(proxy)
+  }
+
+  await proxy.all()
+    .then((response) => {
+      const data = {
+        products: ProductTransformer.fetchCollection(response.data),
+        pagination: PaginationTransformer.fetch(response.pagination)
+      }
+
+      commit(types.ALL, data)
+    })
+}
+
 /**
  * Action fired when all products will be fetched.
  *
@@ -42,7 +65,7 @@ const inStockAll = async ({ commit }, fn = null) => {
  * @param {function} commit Commit function to update the store.
  * @param {function} fn     Callback to edit the parameters on the proxy.
  */
-const all = async ({ commit }, fn = null) => {
+const reload = async ({ commit }, fn = null) => {
   if (typeof fn === 'function') {
     fn(proxy)
   }
@@ -54,7 +77,7 @@ const all = async ({ commit }, fn = null) => {
         pagination: PaginationTransformer.fetch(response.pagination)
       }
 
-      commit(types.ALL, data)
+      commit(types.RELOAD, data)
     })
     .catch(() => {
       const data = {
@@ -337,6 +360,7 @@ const imports = ({ commit }, file) => {
         type: 'success',
         message: response.message
       })
+      store.dispatch('navigator/pop')
     })
     .catch((error) => {
       store.dispatch('application/addAlert', {
@@ -351,6 +375,7 @@ export default {
   search,
   imports,
   detail,
+  reload,
   create,
   created,
   update,

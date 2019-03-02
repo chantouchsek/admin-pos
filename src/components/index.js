@@ -8,6 +8,7 @@ import DateTimePicker from './datetimepicker/Index'
 import ImageCropper from './cropper'
 import { VueEditor } from 'vue2-editor'
 import MaskedInput from 'vue-text-mask'
+import VueSelect from './cool-select'
 
 let km = {
   dow: 7, // Sunday is the first day of the week
@@ -29,7 +30,8 @@ let km = {
   BLoading,
   TextareaAutosize,
   ImageCropper,
-  MaskedInput
+  MaskedInput,
+  VueSelect
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })

@@ -10,11 +10,13 @@ import {
   ALL,
   DETAIL,
   SEARCH,
+  RELOAD,
   CREATED,
   UPDATED,
   REVISION,
   DESTROYED,
   FETCH_FAILED,
+  IN_STOCK_ALL,
   IN_STOCK_RELOAD,
   RELOAD_REVISION
 } from './mutation-types'
@@ -28,7 +30,31 @@ export default {
    * @param {Object} pagination The fetched pagination.
    */
   [ALL] (state, { products, pagination }) {
+    products.map((product) => state.all.push(product))
+    state.pagination = pagination
+  },
+
+  /**
+   * Mutation to update the store with the fetched products.
+   *
+   * @param {Object} state      The current state of the store.
+   * @param {Array}  products    The fetched products.
+   * @param {Object} pagination The fetched pagination.
+   */
+  [RELOAD] (state, { products, pagination }) {
     state.all = products
+    state.pagination = pagination
+  },
+
+  /**
+   * Mutation to update the store with the fetched products.
+   *
+   * @param {Object} state      The current state of the store.
+   * @param {Array}  products    The fetched products.
+   * @param {Object} pagination The fetched pagination.
+   */
+  [IN_STOCK_ALL] (state, { products, pagination }) {
+    products.map((product) => state.inStocks.push(product))
     state.pagination = pagination
   },
 
