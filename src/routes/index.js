@@ -429,6 +429,11 @@ export default [
         component: load('pos/Index')
       },
       {
+        path: 'product-carts',
+        name: 'Products',
+        component: load('pos/Cart')
+      },
+      {
         path: 'users',
         meta: { label: 'Users' },
         component: {

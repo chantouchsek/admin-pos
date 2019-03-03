@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Checkout Area</h1>"
+  <div class="check-area-block">
+    <h1>Checkout Area</h1>
     <div class="checkout-area">
       <span> {{ cart | cartSize }} </span><i class="fa fa-shopping-cart"></i>
       <table>
@@ -14,14 +14,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="product,index in cart" track-by="$index" :key="`product-${index}`">
+        <tr v-for="(product,index) in cart" :track-by="index" :key="`product-${index}`">
           <td class="align-center">{{ product.sku }}</td>
           <td>{{ product.product }}</td>
           <td>{{ product.description }}</td>
           <td class="align-right">{{ cart[$index].quantity }}</td>
           <td class="align-right">{{ product.price | currency }}</td>
         </tr>
-        <button @click="removeProduct(product)"> X</button>
+        <!--<button @click="removeProduct(product)"> X</button>-->
         <tr>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -77,14 +77,14 @@
     name: "checkoutArea",
     props: ['cart', 'cartSize', 'cartSubTotal', 'tax', 'cartTotal'],
 
-    data: function () {
+    data () {
       return {
         showModal: false
       }
     },
 
     filters: {
-      customPluralize: function (cart) {
+      customPluralize (cart) {
         let newName;
 
         if (cart.quantity > 1) {
@@ -95,7 +95,7 @@
         return cart.product;
       },
 
-      cartSize: function (cart) {
+      cartSize (cart) {
         let cartSize = 0;
 
         for (let i = 0; i < cart.length; i++) {
@@ -107,7 +107,7 @@
     },
 
     methods: {
-      removeProduct: function (product) {
+      removeProduct (product) {
         this.cart.$remove(product);
         this.cartSubTotal = this.cartSubTotal - (product.price * product.quantity);
         this.cartTotal = this.cartSubTotal + (this.tax * this.cartSubTotal);
@@ -117,7 +117,7 @@
         }
       },
 
-      checkoutModal: function () {
+      checkoutModal () {
         let self = this;
         self.showModal = true;
 
@@ -125,7 +125,7 @@
 
       },
 
-      hideModal: function () {
+      hideModal () {
         //hide modal and empty modal data
         let self = this;
         self.showModal = false;
@@ -135,7 +135,7 @@
     //intercept the checkout request broadcast
     //run our function
     events: {
-      "checkoutRequest": function () {
+      "checkoutRequest" () {
         let self = this;
         self.checkoutModal();
       }

@@ -9,6 +9,9 @@ import ImageCropper from './cropper'
 import { VueEditor } from 'vue2-editor'
 import MaskedInput from 'vue-text-mask'
 import VueSelect from './cool-select'
+import cart from './cart/cart'
+import products from './cart/product'
+import checkoutArea from './cart/checkoutArea'
 
 let km = {
   dow: 7, // Sunday is the first day of the week
@@ -31,7 +34,10 @@ let km = {
   TextareaAutosize,
   ImageCropper,
   MaskedInput,
-  VueSelect
+  VueSelect,
+  cart,
+  checkoutArea,
+  products
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
