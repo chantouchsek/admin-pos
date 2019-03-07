@@ -58,12 +58,12 @@
                 <th class="text-center">Qty</th>
                 <th class="text-left">Subtotal</th>
                 <th class="text-center">
-                  <i class="fa fa-trash-o cursor-pointer" @click="clearCart" v-if="cart.length"></i>
+                  <i class="fa fa-trash-o cursor-pointer" @click="clearCart" v-if="sale.products.length"></i>
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr v-for="(product,index) in cart" :key="`product-${index}`">
+              <tr v-for="(product,index) in sale.products" :key="`product-${index}`">
                 <th class="text-left">{{ product.name }}</th>
                 <th>{{ product.price | currency }}</th>
                 <th>
@@ -72,7 +72,7 @@
                       <b-button variant="outline-info" size="sm"><i class="fa fa-minus"></i></b-button>
                     </b-input-group-prepend>
                     <b-form-input type="number" min="0"
-                                  v-model="cart[index].qty"
+                                  v-model="sale.products[index].qty"
                                   size="sm"
                     />
                     <b-input-group-append @click="quantityChange(product, 'increment', index)">
@@ -80,7 +80,9 @@
                     </b-input-group-append>
                   </b-input-group>
                 </th>
-                <th>{{ parseInt(product.qty) * parseFloat(product.price) | currency }}</th>
+                <th>
+                  {{ sale.products[index].sub_total = parseInt(product.qty) * parseFloat(product.price) | currency}}
+                </th>
                 <th class="text-right">
                   <b-button type="button" size="sm" variant="danger" @click="removeProduct(product, index)">
                     <i class="fa fa-trash-o cursor-pointer"></i>
@@ -94,19 +96,21 @@
             <tbody>
             <tr>
               <th colspan="1">Total Items:</th>
-              <th colspan="1" class="text-right">{{ cart | cartSize }}</th>
+              <th colspan="1" class="text-right">{{ sale.products | cartSize }}</th>
               <th colspan="1">Sub Total:</th>
-              <th colspan="1" class="text-right">{{ cartSubTotal | currency }}</th>
+              <th colspan="1" class="text-right">{{ sale.grandTotal | currency }}</th>
             </tr>
             <tr>
               <th colspan="1">
                 <b-link v-b-modal.modal-discount>Discount:</b-link>
               </th>
-              <th colspan="1" class="text-right">({{ discountToAllItem | currency }}) {{ discount | currency }}</th>
+              <th colspan="1" class="text-right">
+                ({{ sale.discountToAllItem | currency }}) {{ sale.discount | currency }}
+              </th>
               <th colspan="1">
                 <b-link v-b-modal.modal-tax>Order tax:</b-link>
               </th>
-              <th colspan="1" class="text-right">{{ cartTotal - cartSubTotal | currency }}</th>
+              <th colspan="1" class="text-right">{{ sale.total - sale.grandTotal | currency }}</th>
             </tr>
             <tr>
               <th colspan="2">
@@ -115,7 +119,7 @@
                   <i class="fa fa-commenting-o"></i>
                 </b-link>
               </th>
-              <th colspan="2" class="text-right">{{ cartTotal | currency }}</th>
+              <th colspan="2" class="text-right">{{ sale.total | currency }}</th>
             </tr>
             </tbody>
           </table>
@@ -141,7 +145,7 @@
               <b-col>
                 <b-button-toolbar key-nav aria-label="Toolbar with button groups">
                   <b-button-group class="mx-1 w-100" vertical>
-                    <b-button variant="success">Payment</b-button>
+                    <b-button variant="success" @click="showPayment">Payment</b-button>
                     <b-button variant="danger" @click="clearCart">Clear</b-button>
                   </b-button-group>
                 </b-button-toolbar>
@@ -188,7 +192,7 @@
       </b-col>
     </b-row>
 
-    <b-modal id="modal-center" centered title="Add Customer" scrollable @ok="onSubmit" @hidden="hiddenModal">
+    <b-modal id="modal-center" centered title="Add Customer" scrollable @ok="onSubmit" @hidden="hiddenModal" lazy>
       <b-form @@submit.stop.prevent="onSubmit" @reset="onReset" @keydown="$errors.onKeydown($event)">
         <b-form-group label="Name:"
                       label-for="name"
@@ -251,7 +255,11 @@
       </b-form>
     </b-modal>
 
-    <b-modal id="modal-discount" centered title="Discount 5 or 5%" @ok="onSubmitDiscount" @cancel="onCancelDiscount">
+    <b-modal id="modal-discount" centered title="Discount 5 or 5%"
+             @ok="onSubmitDiscount"
+             @cancel="onCancelDiscount"
+             lazy
+    >
       <b-form-group>
         <b-form-input type="text" v-model="sale.discount" placeholder="You can discount by 5 or 5%"/>
       </b-form-group>
@@ -266,11 +274,123 @@
       </b-form-group>
     </b-modal>
 
-    <b-modal id="modal-tax" centered title="Tax 5 or 5%">
-      <b-form-input type="text" v-model="tax" placeholder="You can set tax by 5 or 5%" required/>
+    <b-modal id="modal-payment"
+             centered
+             title="Payment"
+             scrollable
+             size="lg"
+             ref="payment"
+             @ok="onSubmitSale"
+    >
+      <b-form @submit.prevent="onSubmitSale" @keydown="$errors.onKeydown($event)">
+        <b-row>
+          <b-col cols="9">
+            <table class="table table-info">
+              <tbody>
+              <tr>
+                <td>Total Items</td>
+                <td class="border-right text-right">{{ sale.products | cartSize }}</td>
+                <td>Total Payable</td>
+                <td class="text-right">{{ sale.payment.total | currency }}</td>
+              </tr>
+              <tr>
+                <td>Total Paying</td>
+                <td class="border-right text-right">{{ sale.payment.amount | currency }}</td>
+                <td>Balance</td>
+                <td class="text-right">
+                  {{ sale.paid = sale.payment.amount - sale.payment.total | currency }}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <b-form-group
+              id="notes"
+              label="Notes"
+              label-for="notes"
+              :invalid-feedback="$errors.first('notes')"
+              :state="!$errors.has('notes')"
+            >
+              <b-form-textarea
+                rows="2"
+                max-rows="4"
+                :state="!$errors.has('notes')"
+                v-model="sale.notes"
+                name="notes"
+              />
+            </b-form-group>
+
+            <b-row>
+              <b-col>
+                <b-form-group
+                  id="amount"
+                  label="Amount"
+                  label-for="amount"
+                  :invalid-feedback="$errors.first('amount')"
+                  :state="!$errors.has('amount')"
+                >
+                  <b-form-input type="text"
+                                placeholder="Enter payment amount"
+                                :state="!$errors.has('amount')"
+                                v-model="sale.payment.amount"
+                                name="amount"
+                  />
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                  id="payingBy"
+                  label="Paying By"
+                  label-for="payingBy"
+                  :invalid-feedback="$errors.first('paid_by')"
+                  :state="!$errors.has('paid_by')"
+                >
+                  <b-form-select :options="options"
+                                 :state="!$errors.has('paid_by')"
+                                 v-model="sale.payment.paid_by"
+                                 name="paid_id"
+                  />
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-form-group
+              id="paymentNotes"
+              label="Payment Notes"
+              label-for="notes"
+              :invalid-feedback="$errors.first('notes')"
+              :state="!$errors.has('notes')"
+            >
+              <b-form-textarea
+                rows="2"
+                max-rows="4"
+                :state="!$errors.has('notes')"
+                v-model="sale.payment.notes"
+                name="notes"
+              />
+            </b-form-group>
+
+          </b-col>
+          <b-col cols="3">
+            <b-button-group vertical class="w-100">
+              <b-button variant="info">{{ sale.payment.total | currency }}</b-button>
+              <b-button variant="warning">1</b-button>
+              <b-button variant="warning">5</b-button>
+              <b-button variant="warning">10</b-button>
+              <b-button variant="warning">20</b-button>
+              <b-button variant="warning">50</b-button>
+              <b-button variant="warning">100</b-button>
+              <b-button variant="danger">Clear</b-button>
+            </b-button-group>
+          </b-col>
+        </b-row>
+      </b-form>
     </b-modal>
 
-    <b-modal id="modal-notes" centered title="Notes">
+    <b-modal id="modal-tax" centered title="Tax 5 or 5%" lazy>
+      <b-form-input type="text" v-model="sale.tax" placeholder="You can set tax by 5 or 5%" required/>
+    </b-modal>
+
+    <b-modal id="modal-notes" centered title="Notes" lazy>
       <b-form-group label="Notes:"
                     label-for="notes"
                     :invalid-feedback="$errors.first('notes')"
@@ -282,7 +402,7 @@
       </b-form-group>
     </b-modal>
 
-    <b-modal id="modal-gift-card" centered title="Sell Gift Card">
+    <b-modal id="modal-gift-card" centered title="Sell Gift Card" lazy>
       <b-form @keydown="$errors.onKeydown($event)">
         <b-form-group label="Card Number:"
                       label-for="cardNumber"
@@ -371,9 +491,22 @@
     scrollToTop: true,
     data: () => {
       return {
-        items: [],
         form: { inLine: true },
-        sale: { customerId: '', applyTo: 'orderTotal', discount: 10 },
+        sale: {
+          customerId: 1,
+          applyTo: 'orderTotal',
+          discount: 10,
+          products: [],
+          tax: 0.065,
+          grandTotal: 0,
+          total: 0,
+          paid: 0,
+          discountToAllItem: 0,
+          payment: {
+            paid_by: 1,
+            amount: 0
+          }
+        },
         settings: {
           maxScrollbarLength: 60,
           wheelPropagation: true,
@@ -382,14 +515,15 @@
         },
         query: null,
         checkoutBool: false,
-        cart: [],
-        cartSubTotal: 0,
-        tax: 0.065,
-        cartTotal: 0,
-        discount: 0,
-        discountToAllItem: 0,
         giftCard: { cardNumber: '', active: true },
-        mask: mask
+        mask: mask,
+        options: [
+          { value: 1, text: 'Cash' },
+          { value: 2, text: 'Credit Card' },
+          { value: 3, text: 'Gift Card' },
+          { value: 4, text: 'Strip' },
+          { value: 5, text: 'Other' }
+        ]
       }
     },
     components: {
@@ -452,6 +586,11 @@
         evt.preventDefault()
         await vm.$store.dispatch('customer/create', vm.form)
       },
+      async onSubmitSale (evt) {
+        const vm = this
+        evt.preventDefault()
+        await vm.$store.dispatch('sale/create', vm.sale)
+      },
       onReset (evt) {
         evt.preventDefault()
         this.form = { inLine: true }
@@ -462,18 +601,18 @@
       },
       addToCart (product) {
         let found = false
-        for (let i = 0; i < this.cart.length; i++) {
-          if (this.cart[i].sku === product.sku) {
-            let newProduct = this.cart[i]
+        let vm = this
+        for (let i = 0; i < vm.sale.products.length; i++) {
+          if (vm.sale.products[i].sku === product.sku) {
+            let newProduct = vm.sale.products[i]
             newProduct.qty = newProduct.qty + 1
-            // console.log("DUPLICATE", this.cart[i].product + "'s qty is now: " + this.cart[i].qty)
+            // console.log("DUPLICATE", vm.sale.products[i].product + "'s qty is now: " + vm.sale.products[i].qty)
             found = true
             break
           }
         }
         if (!found) {
-          const vm = this
-          vm.cart.push({
+          vm.sale.products.push({
             id: product.id,
             qty: 1,
             price: product.price,
@@ -482,49 +621,52 @@
             file: product.file
           })
         }
-        this.cartSubTotal = this.cartSubTotal + product.price
-        this.cartTotal = this.cartSubTotal + (this.tax * this.cartSubTotal)
-        this.checkoutBool = true
+        vm.sale.grandTotal = vm.sale.grandTotal + product.price
+        vm.sale.total = vm.sale.grandTotal + (vm.sale.tax * vm.sale.grandTotal)
+        vm.checkoutBool = true
       },
       removeProduct (product, index) {
-        this.cart.splice(index, 1)
-        this.cartSubTotal = this.cartSubTotal - (product.price * product.qty)
-        this.cartTotal = this.cartSubTotal + (this.tax * this.cartSubTotal)
-        if (this.cart.length <= 0) {
-          this.checkoutBool = false
+        let vm = this
+        vm.sale.products.splice(index, 1)
+        vm.sale.grandTotal = vm.sale.grandTotal - (product.price * product.qty)
+        vm.sale.total = vm.sale.grandTotal + (vm.sale.tax * vm.sale.grandTotal)
+        if (vm.sale.products.length <= 0) {
+          vm.checkoutBool = false
         }
       },
       clearCart () {
-        this.cart = []
-        this.cartSubTotal = 0
-        this.cartTotal = 0
-        this.checkoutBool = false
+        let vm = this
+        vm.sale.products = []
+        vm.sale.grandTotal = 0
+        vm.sale.total = 0
+        vm.checkoutBool = false
       },
       quantityChange (product, direction, index) {
-        for (let i = 0; i < this.cart.length; i++) {
-          if (this.cart[i].sku === product.sku) {
-            let newProduct = this.cart[i]
+        let vm = this
+        for (let i = 0; i < vm.sale.products.length; i++) {
+          if (vm.sale.products[i].sku === product.sku) {
+            let newProduct = vm.sale.products[i]
             if (direction === "increment") {
               newProduct.qty = parseInt(newProduct.qty) + 1
-              // this.cart.$set(i, newProduct)
+              // vm.sale.products.$set(i, newProduct)
             } else {
               newProduct.qty = parseInt(newProduct.qty) - 1
               if (parseInt(newProduct.qty) === 0) {
-                this.cart.splice(index, 1)
+                vm.sale.products.splice(index, 1)
               } else {
-                // this.cart.$set(i, newProduct)
+                // vm.sale.products.$set(i, newProduct)
               }
             }
           }
         }
         if (direction === "increment") {
-          this.cartSubTotal = this.cartSubTotal + parseFloat(product.price)
+          vm.sale.grandTotal = vm.sale.grandTotal + parseFloat(product.price)
         } else {
-          this.cartSubTotal = this.cartSubTotal - parseFloat(product.price)
+          vm.sale.grandTotal = vm.sale.grandTotal - parseFloat(product.price)
         }
-        this.cartTotal = this.cartSubTotal + (this.tax * this.cartSubTotal)
-        if (this.cart.length <= 0) {
-          this.checkoutBool = false
+        vm.sale.total = vm.sale.grandTotal + (vm.sale.tax * vm.sale.grandTotal)
+        if (vm.sale.products.length <= 0) {
+          vm.checkoutBool = false
         }
       },
       /**
@@ -534,35 +676,44 @@
         this.addToCart(item)
       },
       onSubmitDiscount (evt) {
+        let vm = this
         evt.preventDefault()
-        if (!this.sale.discount) {
+        if (!vm.sale.discount) {
           return
         }
-        if (this.sale.applyTo === 'orderTotal') {
-          this.cartTotal = this.cartTotal - this.sale.discount
-          this.discount = this.sale.discount
-          this.discountToAllItem = 0
+        if (vm.sale.applyTo === 'orderTotal') {
+          vm.sale.total = vm.sale.total - vm.sale.discount
+          vm.sale.discountToAllItem = 0
         }
-        if (this.sale.applyTo === 'orderItems') {
-          this.discount = this.sale.discount
-          this.cart.map((product) => {
-            return product.price - this.sale.discount
+        if (vm.sale.applyTo === 'orderItems') {
+          vm.sale.products.map((product) => {
+            return product.price - vm.sale.discount
           })
           let cartSize = 0;
-          for (let i = 0; i < this.cart.length; i++) {
-            cartSize += this.cart[i].qty
+          for (let i = 0; i < vm.sale.products.length; i++) {
+            cartSize += vm.sale.products[i].qty
           }
-          this.discountToAllItem = this.sale.discount * cartSize
-          this.cartTotal = this.cartTotal - this.discountToAllItem
+          vm.sale.discountToAllItem = vm.sale.discount * cartSize
+          vm.sale.total = vm.sale.total - vm.sale.discountToAllItem
         }
-        this.$nextTick(() => {
-          this.$root.$emit('bv::hide::modal', 'modal-discount')
+        vm.$nextTick(() => {
+          vm.$root.$emit('bv::hide::modal', 'modal-discount')
         })
       },
       onCancelDiscount () {
-        this.sale.discount = '0'
+        this.sale.discount = 0
       },
-      ...random
+      ...random,
+      showPayment (bvEvt) {
+        let vm = this
+        bvEvt.preventDefault()
+        if (vm.checkoutBool) {
+          vm.sale.payment.amount = vm.sale.total
+          vm.sale.payment.total = vm.sale.total
+          vm.sale.payment.totalPaying = vm.sale.total
+          vm.$refs.payment.show()
+        }
+      }
     },
     /**
      * This method will be fired once the application has been mounted.
@@ -596,6 +747,7 @@
           if (success) {
             this.$nextTick(() => {
               this.$root.$emit('bv::hide::modal', 'modal-center')
+              this.$refs.payment.hide()
             })
           }
         }
