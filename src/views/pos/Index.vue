@@ -49,7 +49,7 @@
             <!--</template>-->
             <!--</vue-select>-->
           </b-form-group>
-          <vue-perfect-scrollbar class="scroll-area__cart" :settings="settings">
+          <vue-perfect-scrollbar class="scroll-area__cart">
             <table class="table table-fixed table-hover table-borderless">
               <thead class="bg-gray-100">
               <tr>
@@ -157,7 +157,7 @@
       </b-col>
       <b-col cols="7">
         <b-card>
-          <vue-perfect-scrollbar class="scroll-area" :settings="settings" @ps-y-reach-end="setQueryScroll">
+          <vue-perfect-scrollbar class="scroll-area" @ps-y-reach-end="setQueryScroll">
             <b-card-group columns>
               <b-card v-for="(pro,index) in product.all"
                       :key="`product-${index}`"
@@ -478,7 +478,6 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import debounce from 'lodash.debounce'
-  import VuePerfectScrollbar from 'vue-perfect-scrollbar'
   import mask from '@/utilities/mask/credit-card'
   import random from '@/utilities/random/number'
 
@@ -507,12 +506,6 @@
             amount: 0
           }
         },
-        settings: {
-          maxScrollbarLength: 60,
-          wheelPropagation: true,
-          suppressScrollX: true,
-          mimScrollbarLength: 30
-        },
         query: null,
         checkoutBool: false,
         giftCard: { cardNumber: '', active: true },
@@ -525,9 +518,6 @@
           { value: 5, text: 'Other' }
         ]
       }
-    },
-    components: {
-      VuePerfectScrollbar
     },
     /**
      * The computed properties the page can use.

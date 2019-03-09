@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VButton from './VButton'
 import Datepicker from 'vuejs-datepicker'
 import { en } from 'vuejs-datepicker/dist/locale'
-import BLoading from './BLoading'
 import TextareaAutosize from './TextareaAutosize'
 import DateTimePicker from './datetimepicker/Index'
 import ImageCropper from './cropper'
@@ -30,7 +29,6 @@ let km = {
 
 [
   VButton,
-  BLoading,
   TextareaAutosize,
   ImageCropper,
   MaskedInput,

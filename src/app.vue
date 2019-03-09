@@ -145,4 +145,6 @@
   @import '~bootstrap-vue/dist/bootstrap-vue.css';
   // Import Main styles for this application
   @import 'assets/scss/style';
+  // Perfect scroll
+  @import "~vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 </style>

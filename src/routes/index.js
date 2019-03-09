@@ -37,7 +37,6 @@ const StandardButtons = () => import('@/views/buttons/StandardButtons').then(m =
 const ButtonGroups = () => import('@/views/buttons/ButtonGroups').then(m => m.default || m)
 const Dropdowns = () => import('@/views/buttons/Dropdowns').then(m => m.default || m)
 const BrandButtons = () => import('@/views/buttons/BrandButtons').then(m => m.default || m)
-const Loading = () => import('@/views/Loading').then(m => m.default || m)
 
 // Views - Icons
 const Flags = () => import('@/views/icons/Flags').then(m => m.default || m)
@@ -417,11 +416,6 @@ export default [
             props: true
           }
         ]
-      },
-      {
-        path: 'loading',
-        name: 'Loading',
-        component: Loading
       },
       {
         path: 'pos',
