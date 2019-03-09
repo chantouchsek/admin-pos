@@ -354,17 +354,17 @@
               </b-col>
             </b-row>
             <b-form-group
-              id="paymentNotes"
-              label="Payment Notes"
-              label-for="notes"
-              :invalid-feedback="$errors.first('notes')"
-              :state="!$errors.has('notes')"
+              id="paymentReference"
+              label="Payment Reference"
+              label-for="reference"
+              :invalid-feedback="$errors.first('reference')"
+              :state="!$errors.has('reference')"
             >
               <b-form-textarea
                 rows="2"
                 max-rows="4"
-                :state="!$errors.has('notes')"
-                v-model="sale.payment.notes"
+                :state="!$errors.has('reference')"
+                v-model="sale.payment.reference"
                 name="notes"
               />
             </b-form-group>
@@ -395,7 +395,7 @@
                     label-for="notes"
                     :invalid-feedback="$errors.first('notes')"
       >
-        <textarea-autosize v-model="sale.notes"
+        <textarea-autosize v-model="sale.payment.notes"
                            input-name="notes"
                            placeholder="Enter payment notes"
         ></textarea-autosize>
@@ -606,7 +606,6 @@
           if (vm.sale.products[i].sku === product.sku) {
             let newProduct = vm.sale.products[i]
             newProduct.qty = newProduct.qty + 1
-            // console.log("DUPLICATE", vm.sale.products[i].product + "'s qty is now: " + vm.sale.products[i].qty)
             found = true
             break
           }
@@ -748,6 +747,7 @@
             this.$nextTick(() => {
               this.$root.$emit('bv::hide::modal', 'modal-center')
               this.$refs.payment.hide()
+              this.$errors.flush()
             })
           }
         }
