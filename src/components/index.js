@@ -11,6 +11,7 @@ import VueSelect from './cool-select'
 import cart from './cart/cart'
 import products from './cart/product'
 import checkoutArea from './cart/checkoutArea'
+import VueChat from './Chat'
 
 let km = {
   dow: 7, // Sunday is the first day of the week
@@ -35,7 +36,8 @@ let km = {
   VueSelect,
   cart,
   checkoutArea,
-  products
+  products,
+  VueChat
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })

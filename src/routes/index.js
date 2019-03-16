@@ -389,7 +389,7 @@ export default [
       },
       {
         path: 'purchases',
-        meta: { label: 'Customers' },
+        meta: { label: 'Purchases' },
         component: {
           render (c) {
             return c('router-view')
@@ -413,6 +413,30 @@ export default [
             meta: { label: 'Purchase Edit' },
             name: 'purchase.edit',
             component: load('admin/purchases/Edit'),
+            props: true
+          }
+        ]
+      },
+      {
+        path: 'sales',
+        meta: { label: 'Sales' },
+        component: {
+          render (c) {
+            return c('router-view')
+          }
+        },
+        children: [
+          {
+            path: '/',
+            name: 'sale.index',
+            meta: { label: 'Table' },
+            component: load('sales/Index'),
+          },
+          {
+            path: ':uuid/show',
+            meta: { label: 'Detail' },
+            name: 'sale.show',
+            component: load('sales/Show'),
             props: true
           }
         ]

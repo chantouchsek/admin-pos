@@ -142,8 +142,28 @@ const destroyed = ({ commit }, sale) => {
   commit(types.DESTROYED, SaleTransformer.fetch(sale))
 }
 
+/**
+ * Action fired when a product will be updated.
+ *
+ * @param {function} commit  Commit function to update the store.
+ * @param {string} uuid     Callback to edit the parameters on the proxy.
+ */
+const show = ({ commit }, uuid) => {
+  proxy.find(uuid)
+    .then((response) => {
+      commit(types.SHOW, SaleTransformer.fetch(response))
+    })
+    .catch((error) => {
+      store.dispatch('application/addAlert', {
+        type: 'danger',
+        message: error.message
+      })
+    })
+}
+
 export default {
   all,
+  show,
   create,
   created,
   update,

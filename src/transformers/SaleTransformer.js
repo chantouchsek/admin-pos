@@ -18,16 +18,19 @@ class SaleTransformer extends Transformer {
     return new Sale({
       id: sale.id,
       uuid: sale.uuid,
+      saleNumber: sale.sale_number,
       customerId: sale.customer_id,
       notes: sale.notes,
-      payment: sale.payment,
+      payments: sale.payments,
       total: sale.total,
       grandTotal: sale.grand_total,
       paid: sale.paid,
       tax: sale.tax,
       discount: sale.discount,
       status: sale.status,
-      products: sale.products
+      products: sale.products,
+      customer: sale.customer,
+      date: sale.date
     })
   }
 
